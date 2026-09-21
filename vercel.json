@@ -1,0 +1,13 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/slides.pdf",
+      "destination": "/트루먼_3분_발표_지면형.pdf"
+    },
+    {
+      "source": "/script.pdf",
+      "destination": "/트루먼_발표대본_3분30초.pdf"
+    }
+  ]
+}
