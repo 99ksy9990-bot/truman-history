@@ -54,6 +54,17 @@ b{font-weight:400;color:var(--spot)}
 .kicker{font-size:16px;letter-spacing:5px;color:var(--spot);margin-bottom:12px}
 h1,h2{font-size:88px;line-height:1.1;letter-spacing:-2.5px;word-break:keep-all}
 h3{font-size:26px;line-height:1.34}
+.marker{display:inline-block;position:relative;isolation:isolate;z-index:0}
+.marker::after{content:'';position:absolute;z-index:-1;left:-3%;right:-5%;bottom:.04em;height:.56em;
+  pointer-events:none;background:linear-gradient(92deg,#d5c268a8,#d8c66c8f 72%,#cfb95d70);
+  clip-path:polygon(0 15%,97% 0,100% 82%,3% 100%);opacity:.82;
+  transform-origin:left center;transform:rotate(-1.2deg) scaleX(0)}
+@keyframes highlightSweep{
+  0%{transform:rotate(-1.2deg) scaleX(0)}
+  72%{transform:rotate(-.7deg) scaleX(1.035)}
+  100%{transform:rotate(-1deg) scaleX(1)}}
+.pg.on .marker::after{animation:highlightSweep .38s cubic-bezier(.22,.75,.28,1)
+  calc(.46s + var(--marker-order)*.18s) both}
 
 /* 단 */
 .row{flex:1;min-height:0;display:grid;padding-top:26px}
@@ -464,6 +475,9 @@ const secretMap=$('.pg[aria-label^="5."] .ph.scan');
 if(secretMap){secretMap.classList.add('secret-map');
   const stamp=document.createElement('span');stamp.className='secret-stamp';stamp.setAttribute('aria-hidden','true');
   stamp.innerHTML='SECRET<small>기밀 문서</small>';secretMap.append(stamp)}
+[$$('.pg[aria-label^="2."] h3'),$$('.pg[aria-label^="4."] h3')].forEach(group=>group.forEach((heading,index)=>{
+  const marker=document.createElement('span');marker.className='marker';marker.style.setProperty('--marker-order',index);
+  while(heading.firstChild)marker.append(heading.firstChild);heading.append(marker)}));
 // 표제를 글자 단위로 쪼개 타자기 지연을 매긴다
 $$('.pg h1,.pg h2').forEach(h=>{let i=0;
   (function walk(n){[...n.childNodes].forEach(c=>{
