@@ -96,6 +96,17 @@ h3{font-size:26px;line-height:1.34}
   background-image:radial-gradient(circle,#d9d7cf .6px,transparent .66px);
   background-size:2.6px 2.6px;opacity:.38}
 .ph.mid img{object-position:center center}
+.secret-map.scan img{animation:none!important;object-position:center top}
+.secret-stamp{position:absolute;left:50%;top:44%;z-index:2;width:220px;padding:12px 8px 9px;
+  color:var(--stamp);border:6px double currentColor;background:#e7e5ded9;text-align:center;
+  font-family:Arial,sans-serif;font-size:34px;font-weight:900;line-height:1;letter-spacing:4px;
+  opacity:1;transform:translate(-50%,-50%) rotate(-11deg);pointer-events:none}
+.secret-stamp small{display:block;margin-top:7px;font-size:13px;letter-spacing:5px}
+@keyframes stampIn{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(-11deg) scale(1.75)}
+  68%{opacity:1;transform:translate(-50%,-50%) rotate(-11deg) scale(.92)}
+  100%{opacity:1;transform:translate(-50%,-50%) rotate(-11deg) scale(1)}}
+.pg.on .secret-stamp{animation:stampIn .52s cubic-bezier(.2,.8,.3,1.15) .78s both}
 
 /* 부재 */
 .band{flex:none;display:grid;border-top:3px solid var(--rule);border-bottom:1px solid var(--rule)}
@@ -226,7 +237,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
         <div style="display:flex;flex-direction:column;justify-content:center;padding-bottom:22px"><div class="pfile">
           <p class="ft">인물 파일</p>
           <dl><dt>국적</dt><dd>미국</dd>
-            <dt>생몰</dt><dd>1884 ― 1972</dd>
+            <dt>생애</dt><dd>1884 ― 1972</dd>
             <dt>출신</dt><dd>미주리의 농부 · 잡화점 주인</dd>
             <dt>승계</dt><dd>부통령 취임 82일 만에</dd>
             <dt>별명</dt><dd>책임을 넘기지 않은 대통령</dd></dl></div></div>
@@ -449,6 +460,10 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const secretMap=$('.pg[aria-label^="5."] .ph.scan');
+if(secretMap){secretMap.classList.add('secret-map');
+  const stamp=document.createElement('span');stamp.className='secret-stamp';stamp.setAttribute('aria-hidden','true');
+  stamp.innerHTML='SECRET<small>기밀 문서</small>';secretMap.append(stamp)}
 // 표제를 글자 단위로 쪼개 타자기 지연을 매긴다
 $$('.pg h1,.pg h2').forEach(h=>{let i=0;
   (function walk(n){[...n.childNodes].forEach(c=>{
@@ -460,7 +475,7 @@ $$('.pg h1,.pg h2').forEach(h=>{let i=0;
       n.replaceChild(f,c);}
     else if(c.nodeType===1&&c.tagName!=='BR'){walk(c)}});})(h);
   h.dataset.typingMs=String(260+i*52);});
-const pgs=$$('.pg'),N=pgs.length,typingTimers=new WeakMap();let cur=0;
+const pgs=$$('.pg'),N=pgs.length,typingTimers=new WeakMap();let cur=-1;
 const notes=[
 ['28초 · 0:00―0:28','트루먼의 집무실 책상에는 명패가 하나 있었습니다. 모든 책임은 내가 진다. 1945년 4월 12일, 부통령이 된 지 82일 된 한 남자가 대통령이 됩니다. 미주리의 농부였고 잡화점 주인이었습니다. 그때 미국은 최강국이 됐지만 유럽은 폐허였고, 그 빈틈에서 소련이 커지며 냉전이 시작됩니다. 준비되지 않은 사람이 세계의 결정을 떠안은 것입니다.'],
 ['18초 · 0:28―0:46','그는 7년 9개월 동안 네 번, 미룰 수 없는 결정을 내립니다. 1945년 전쟁을 끝내는 결정, 1947년 냉전을 여는 결정, 1950년 남의 나라를 지키는 결정, 그리고 1951년 자기편 최고사령관을 자르는 결정입니다.'],
@@ -470,7 +485,7 @@ const notes=[
 ['31초 · 2:25―2:56','네 번째. 1950년 10월 웨이크섬에서 마주한 두 사람은 정면으로 부딪칩니다. 트루먼은 협상을 통한 질서 회복을, 맥아더는 완전한 승리를 원했습니다. 트루먼은 전면전을 막으려 했고 맥아더는 만주 폭격까지 요구했습니다. 기준이 각각 문민통제와 군사적 승리였습니다. 결정타는 불복종이었습니다. 정부 방침에 어긋나는 공개 발언이 이어지자, 1951년 4월 11일 트루먼은 그를 해임합니다.'],
 ['34초 · 2:56―3:30','왼쪽은 트루먼이 흑인 공군 하사와 악수하는 사진입니다. 대통령은 결정해야 한다, 그는 책임을 누구에게도 넘길 수 없다. 그가 남긴 것은 2차 대전 종결, 유럽 재건, 대한민국 방어, 문민통제, 미군 내 인종차별 철폐입니다. 그림자도 남았습니다. 원폭의 민간인 희생, 냉전 대립, 핵무기 경쟁, 3년 넘게 이어진 한국전쟁, 그리고 오늘까지 이어지는 한반도 분단입니다. 업적과 그림자를 함께 보아야 합니다. 모든 책임은 내가 진다. 감사합니다.']];
 function go(n){
-  cur=Math.max(0,Math.min(N-1,n));
+  const next=Math.max(0,Math.min(N-1,n));if(next===cur)return;cur=next;
   pgs.forEach((s,i)=>{const active=i===cur,h=s.querySelector('h1,h2');
     if(h){clearTimeout(typingTimers.get(h));h.classList.remove('typing-done');
       if(active)typingTimers.set(h,setTimeout(()=>h.classList.add('typing-done'),Number(h.dataset.typingMs)))}
