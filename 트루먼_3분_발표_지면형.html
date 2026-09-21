@@ -147,6 +147,7 @@ h1 .tw,h2 .tw{opacity:0;position:relative}
 .pg.on h1 .tw::after,.pg.on h2 .tw::after{content:'';position:absolute;top:.14em;right:-.055em;
   width:.065em;height:.76em;background:var(--spot);opacity:0;pointer-events:none;
   animation:twcar .1s steps(1,end) var(--d) both}
+.pg h1.typing-done .tw::after,.pg h2.typing-done .tw::after{display:none!important}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 [data-step]{opacity:0}
 .pg.on [data-step]{animation:rise .62s cubic-bezier(.2,.75,.3,1) both}
@@ -457,8 +458,9 @@ $$('.pg h1,.pg h2').forEach(h=>{let i=0;
         const sp=document.createElement('span');sp.className='tw';
         sp.style.setProperty('--d',(140+i*52)+'ms');sp.textContent=ch;i++;f.appendChild(sp);}
       n.replaceChild(f,c);}
-    else if(c.nodeType===1&&c.tagName!=='BR'){walk(c)}});})(h);});
-const pgs=$$('.pg'),N=pgs.length;let cur=0;
+    else if(c.nodeType===1&&c.tagName!=='BR'){walk(c)}});})(h);
+  h.dataset.typingMs=String(260+i*52);});
+const pgs=$$('.pg'),N=pgs.length,typingTimers=new WeakMap();let cur=0;
 const notes=[
 ['28초 · 0:00―0:28','트루먼의 집무실 책상에는 명패가 하나 있었습니다. 모든 책임은 내가 진다. 1945년 4월 12일, 부통령이 된 지 82일 된 한 남자가 대통령이 됩니다. 미주리의 농부였고 잡화점 주인이었습니다. 그때 미국은 최강국이 됐지만 유럽은 폐허였고, 그 빈틈에서 소련이 커지며 냉전이 시작됩니다. 준비되지 않은 사람이 세계의 결정을 떠안은 것입니다.'],
 ['18초 · 0:28―0:46','그는 7년 9개월 동안 네 번, 미룰 수 없는 결정을 내립니다. 1945년 전쟁을 끝내는 결정, 1947년 냉전을 여는 결정, 1950년 남의 나라를 지키는 결정, 그리고 1951년 자기편 최고사령관을 자르는 결정입니다.'],
@@ -469,7 +471,10 @@ const notes=[
 ['34초 · 2:56―3:30','왼쪽은 트루먼이 흑인 공군 하사와 악수하는 사진입니다. 대통령은 결정해야 한다, 그는 책임을 누구에게도 넘길 수 없다. 그가 남긴 것은 2차 대전 종결, 유럽 재건, 대한민국 방어, 문민통제, 미군 내 인종차별 철폐입니다. 그림자도 남았습니다. 원폭의 민간인 희생, 냉전 대립, 핵무기 경쟁, 3년 넘게 이어진 한국전쟁, 그리고 오늘까지 이어지는 한반도 분단입니다. 업적과 그림자를 함께 보아야 합니다. 모든 책임은 내가 진다. 감사합니다.']];
 function go(n){
   cur=Math.max(0,Math.min(N-1,n));
-  pgs.forEach((s,i)=>{s.classList.toggle('on',i===cur);s.setAttribute('aria-hidden',i!==cur)});
+  pgs.forEach((s,i)=>{const active=i===cur,h=s.querySelector('h1,h2');
+    if(h){clearTimeout(typingTimers.get(h));h.classList.remove('typing-done');
+      if(active)typingTimers.set(h,setTimeout(()=>h.classList.add('typing-done'),Number(h.dataset.typingMs)))}
+    s.classList.toggle('on',active);s.setAttribute('aria-hidden',!active)});
   $('#page').textContent=`0${cur+1} / 0${N}`;
   $$('#dots button').forEach((b,i)=>b.setAttribute('aria-current',i===cur));
   $('#prev').disabled=cur===0;$('#next').disabled=cur===N-1;
