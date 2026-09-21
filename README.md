@@ -11,8 +11,8 @@
 
 ## 바로가기
 
-- 웹 발표: 배포 후 주소 추가 예정
-- 발표 자료 PDF: `/slides.pdf`
-- 발표 대본 PDF: `/script.pdf`
+- 웹 발표: https://truman-history.vercel.app
+- 발표 자료 PDF: https://truman-history.vercel.app/slides.pdf
+- 발표 대본 PDF: https://truman-history.vercel.app/script.pdf
 
 화면은 16:9 비율에 맞춰 제작되었으며, HTML에는 발표에 필요한 이미지와 글꼴이 포함되어 있습니다.
