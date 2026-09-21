@@ -177,6 +177,10 @@ body.peek #hint{opacity:.95}
 #tick{position:fixed;right:22px;bottom:18px;z-index:20;font-size:17px;color:#1b1b1d;opacity:.22;pointer-events:none}
 body.peek #tick{opacity:0}
 #prog{position:fixed;top:0;left:0;height:3px;background:var(--ink);z-index:40;transition:width .3s}
+body.is-fullscreen #bar,
+body.is-fullscreen #hint,
+body.is-fullscreen #tick,
+body.is-fullscreen #prog{display:none!important}
 dialog{background:var(--plate);color:var(--ink);border:1px solid var(--rule);padding:34px;
   width:min(900px,92vw);max-height:82vh;line-height:1.8}
 dialog::backdrop{background:#00000099}
@@ -478,6 +482,10 @@ pgs.forEach((s,i)=>{const b=document.createElement('button');b.setAttribute('ari
 $('#notesBtn').onclick=()=>$('#noteDlg').showModal();$('#srcBtn').onclick=()=>$('#srcDlg').showModal();
 $$('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 async function full(){try{document.fullscreenElement?await document.exitFullscreen():await document.documentElement.requestFullscreen()}catch(e){}}
+function syncFullscreenUI(){document.body.classList.toggle('is-fullscreen',!!(document.fullscreenElement||document.webkitFullscreenElement))}
+document.addEventListener('fullscreenchange',syncFullscreenUI);
+document.addEventListener('webkitfullscreenchange',syncFullscreenUI);
+syncFullscreenUI();
 $('#fsBtn').onclick=full;
 let run=false,left=210,until=0;
 function tick(){if(run){left=Math.max(0,Math.ceil((until-Date.now())/1000));if(!left){run=false;$('#timer').textContent='완료'}}
