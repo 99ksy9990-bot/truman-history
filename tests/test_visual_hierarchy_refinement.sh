@@ -42,7 +42,7 @@ if(brightness1(stageColor1)<224||brightness1(paperColor1)<243) throw new Error('
 if(capSize1<16.2||briefSize1<21.2) throw new Error('captions and briefs need the agreed twelve-percent enlargement');
 if(twDelays1.length!==2||twDelays1[1]-twDelays1[0]!==52) throw new Error('typewriter cadence must remain unchanged at 52ms');
 if(cases1!==2||issueColor1!=='rgb(141, 43, 33)') throw new Error('slide 3 needs two opposing cases with a red issue treatment');
-if(slide4Animations1.length!==3||slide4Animations1.some(name=>name!=='scanDownHold')) throw new Error('all three slide 4 documents should scan downward and hold');
+if(slide4Animations1.length!==3||slide4Animations1.some(name=>name!=='scan')) throw new Error('all three slide 4 documents should use the same down-and-up scan as slide 2');
 if(slide6Layout1.ratio<2.6||slide6Layout1.tableFont<21.5) throw new Error('slide 6 table needs more width and larger type');
 if(closeSize1<31) throw new Error('slide 7 closing statement needs stronger emphasis');
 await closeTab(refinePage1);
