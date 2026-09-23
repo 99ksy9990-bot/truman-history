@@ -49,6 +49,18 @@ body.navback .pg.on.leaving{z-index:5;box-shadow:0 18px 60px #00000047;
   100%{transform:translate(-50%,-50%) scale(var(--s,1))}}
 @keyframes pgTuck{0%{transform:translate(-50%,-50%) scale(var(--s,1))}
   100%{transform:translate(-50%,-50%) scale(calc(var(--s,1)*.972))}}
+/* 맺음 면은 같은 넘김을 느리고 무겁게 */
+body.navfinal .pg.on.leaving{animation:pgOut .86s cubic-bezier(.36,.02,.22,1) both}
+body.navfinal .pg.on{animation:pgSettle .86s cubic-bezier(.24,.8,.28,1) both}
+/* 맺음 면은 전환이 길어 본문 등장을 한 박자 늦춘다 */
+.pg[aria-label^="7."].on h1 .tw,.pg[aria-label^="7."].on h1 .tw::after{animation-delay:calc(var(--d) + 300ms)}
+.pg[aria-label^="7."].on .kicker{animation-delay:.61s}
+.pg[aria-label^="7."].on .kicker .pno{animation-delay:.63s}
+.pg[aria-label^="7."].on [data-step="1"]{animation-delay:.92s}
+.pg[aria-label^="7."].on [data-step="2"]{animation-delay:1.22s}
+.pg[aria-label^="7."].on [data-step="3"]{animation-delay:1.52s}
+.pg[aria-label^="7."].on [data-step="4"]{animation-delay:1.82s}
+.pg[aria-label^="7."].on .marker::after{animation-delay:calc(1.1s + var(--marker-order)*.18s)}
 @media (prefers-reduced-motion:reduce){.pg.on,.pg.on.leaving{animation:none!important}}
 /* 신문지 결 */
 .pg::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
@@ -67,7 +79,11 @@ body.navback .pg.on.leaving{z-index:5;box-shadow:0 18px 60px #00000047;
 .mast .r2{display:flex;justify-content:space-between;align-items:center;
   border-top:1px solid var(--hair);height:calc(14px + var(--mgap));padding:var(--mgap) 0 0}
 .mast .l,.mast .rt{font-size:15px;letter-spacing:2.2px;color:var(--ink2);line-height:1;padding-top:17px}
-.mast .rt{text-align:right}
+.mast .rt{text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:12px}
+.mast .rt .pips{display:flex;gap:4px;align-items:center}
+.mast .rt .pips i{display:block;width:8px;height:8px;border:1px solid #9a9890;background:transparent}
+.mast .rt .pips i.f{background:var(--spot);border-color:var(--spot)}
+.mast .rt .pn{letter-spacing:2.2px}
 .mast .n{font-size:37px;letter-spacing:9px;white-space:nowrap;line-height:1;display:block;text-align:center}
 .mast .n i{display:block;font-style:normal;font-size:13px;letter-spacing:5.5px;
   color:var(--ink2);margin-top:6px;text-indent:5.5px}
@@ -78,6 +94,10 @@ body.navback .pg.on.leaving{z-index:5;box-shadow:0 18px 60px #00000047;
 .head{height:var(--head);flex:none;display:flex;flex-direction:column;justify-content:center;
   border-bottom:1px solid var(--rule)}
 .kicker{font-size:16px;letter-spacing:5px;color:var(--spot);margin-bottom:12px;display:flex;align-items:center;gap:13px}
+@keyframes kickIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes pnoStamp{0%{opacity:0;transform:scale(1.55)}58%{opacity:1;transform:scale(.95)}100%{opacity:1;transform:scale(1)}}
+.pg.on .kicker{animation:kickIn .3s cubic-bezier(.2,.8,.3,1) .31s both}
+.pg.on .kicker .pno{transform-origin:left center;animation:pnoStamp .34s cubic-bezier(.2,.85,.3,1) .33s both}
 .kicker .pno{flex:none;font-size:13px;letter-spacing:2.6px;line-height:1;border:1.5px solid var(--spot);padding:4px 7px 3px;text-indent:2.6px}
 .exhibit-kicker{display:flex;align-items:baseline;gap:10px;white-space:nowrap;letter-spacing:0}
 .exhibit-kicker .minor{font-size:12px;font-weight:700;letter-spacing:2px}
@@ -97,7 +117,7 @@ h3{font-size:26px;line-height:1.34}
   72%{transform:rotate(-.7deg) scaleX(1.035)}
   100%{transform:rotate(-1deg) scaleX(1)}}
 .pg.on .marker::after{animation:highlightSweep .38s cubic-bezier(.22,.75,.28,1)
-  calc(.63s + var(--marker-order)*.18s) both}
+  calc(.8s + var(--marker-order)*.18s) both}
 .pg[aria-label^="1."] .marker::after{bottom:.12em;height:.7em}
 
 /* 단 */
@@ -155,7 +175,7 @@ h3{font-size:26px;line-height:1.34}
   0%{opacity:0;transform:translate(-50%,-50%) rotate(-11deg) scale(1.75)}
   68%{opacity:1;transform:translate(-50%,-50%) rotate(-11deg) scale(.92)}
   100%{opacity:1;transform:translate(-50%,-50%) rotate(-11deg) scale(1)}}
-.pg.on .secret-stamp{animation:stampIn .52s cubic-bezier(.2,.8,.3,1.15) .95s both}
+.pg.on .secret-stamp{animation:stampIn .52s cubic-bezier(.2,.8,.3,1.15) 1.15s both}
 
 /* 부재 */
 .band{flex:none;display:grid;border-top:3px solid var(--rule);border-bottom:1px solid var(--rule)}
@@ -261,10 +281,10 @@ h1 .tw,h2 .tw{opacity:0;position:relative}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 [data-step]{opacity:0}
 .pg.on [data-step]{animation:rise .62s cubic-bezier(.2,.75,.3,1) both}
-.pg.on [data-step="1"]{animation-delay:.39s}
-.pg.on [data-step="2"]{animation-delay:.69s}
-.pg.on [data-step="3"]{animation-delay:.99s}
-.pg.on [data-step="4"]{animation-delay:1.29s}
+.pg.on [data-step="1"]{animation-delay:.62s}
+.pg.on [data-step="2"]{animation-delay:.92s}
+.pg.on [data-step="3"]{animation-delay:1.22s}
+.pg.on [data-step="4"]{animation-delay:1.52s}
 @keyframes scan{
   0%{object-position:center 0%}
   50%{object-position:center 100%}
@@ -312,7 +332,8 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
   h1 .tw,h2 .tw{opacity:1!important;animation:none!important}
   h1 .tw::after,h2 .tw::after{display:none!important}
   .ph.scan img{animation:none!important;object-position:center top!important}
-  .pg,.pg.on,.pg.on.leaving{animation:none!important;box-shadow:none!important}
+  .pg,.pg.on,.pg.on.leaving{animation:none!important;box-shadow:none!important;opacity:1!important}
+  .kicker,.kicker .pno{animation:none!important;opacity:1!important;transform:none!important}
   .ph::after{display:none}
   /* 인쇄에서는 신문 결 텍스처가 거칠게 래스터화되므로 옅은 음영만 남긴다 */
   .pg::before{background-image:radial-gradient(120% 92% at 50% 46%,transparent 62%,#6d6c6212 100%)!important;
@@ -329,7 +350,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 <!-- 01 표지 · 인물 -->
 <section class="pg on" aria-label="1. 모든 책임은 내가 진다">
   <div class="mast"><div class="r1"><span class="l">제33대 대통령 · 재임 1945―1953</span>
-    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt">No. 01 / 07</span></div>
+    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt"><span class="pips"><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="pn">01 / 07</span></span></div>
     <div class="r2"><span class="s">HARRY S. TRUMAN · 1884―1972</span><span class="s">역사 · 염초롱</span></div></div>
   <div class="row" style="grid-template-columns:1.52fr .82fr;padding-top:41px">
     <div class="c">
@@ -366,7 +387,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 <!-- 02 결단 색인 -->
 <section class="pg" aria-label="2. 네 번의 결단">
   <div class="mast"><div class="r1"><span class="l">결단 색인 · Decision Index</span>
-    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt">No. 02 / 07</span></div>
+    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt"><span class="pips"><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i></span><span class="pn">02 / 07</span></span></div>
     <div class="r2"><span class="s">1945 ― 1951</span><span class="s">역사 · 염초롱</span></div></div>
   <div class="head"><p class="kicker"><span class="pno">02</span><span>재임 7년 9개월</span></p>
     <h2>네 번의 <em>결단</em>이 세계를 바꿨다.</h2></div>
@@ -393,7 +414,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 <!-- 03 결단 01 · 1945 -->
 <section class="pg" aria-label="3. 결단 01 전쟁의 종결">
   <div class="mast"><div class="r1"><span class="l">결단 01 · 1945</span>
-    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt">No. 03 / 07</span></div>
+    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt"><span class="pips"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i></span><span class="pn">03 / 07</span></span></div>
     <div class="r2"><span class="s">워싱턴 ― 1945년 8월</span><span class="s">역사 · 염초롱</span></div></div>
   <div class="head"><p class="kicker"><span class="pno">03</span><span>전쟁 종결</span></p>
     <h2>전쟁은 끝났다. <em>논쟁은</em> 남았다.</h2></div>
@@ -423,7 +444,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 <!-- 04 결단 02 · 1947―1949 -->
 <section class="pg" aria-label="4. 결단 02 냉전의 시작">
   <div class="mast"><div class="r1"><span class="l">결단 02 · 1947―1949</span>
-    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt">No. 04 / 07</span></div>
+    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt"><span class="pips"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i></span><span class="pn">04 / 07</span></span></div>
     <div class="r2"><span class="s">봉쇄정책 · Containment</span><span class="s">역사 · 염초롱</span></div></div>
   <div class="head"><p class="kicker"><span class="pno">04</span><span>냉전 봉쇄</span></p>
     <h2>막는 방법은 <em>셋이었다.</em></h2></div>
@@ -449,7 +470,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 <!-- 05 결단 03 · 1950 -->
 <section class="pg" aria-label="5. 결단 03 대한민국 방어">
   <div class="mast"><div class="r1"><span class="l">결단 03 · 1950</span>
-    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt">No. 05 / 07</span></div>
+    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt"><span class="pips"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></span><span class="pn">05 / 07</span></span></div>
     <div class="r2"><span class="s">한국 ― 1950년 6월 25일</span><span class="s">역사 · 염초롱</span></div></div>
   <div class="head"><p class="kicker"><span class="pno">05</span><span>한국전쟁</span></p>
     <h2>봉쇄정책이 <em>전쟁이</em> 되었다.</h2></div>
@@ -474,7 +495,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 <!-- 06 결단 04 · 1951 -->
 <section class="pg" aria-label="6. 결단 04 맥아더 해임">
   <div class="mast"><div class="r1"><span class="l">결단 04 · 1951</span>
-    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt">No. 06 / 07</span></div>
+    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt"><span class="pips"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span><span class="pn">06 / 07</span></span></div>
     <div class="r2"><span class="s">워싱턴 ― 1951년 4월 11일</span><span class="s">역사 · 염초롱</span></div></div>
   <div class="head"><p class="kicker"><span class="pno">06</span><span>문민통제</span></p>
     <h2>누가 전쟁을 <em>결정하는가.</em></h2></div>
@@ -501,7 +522,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 <!-- 07 기록 종결 -->
 <section class="pg" aria-label="7. 결단과 평가">
   <div class="mast"><div class="r1"><span class="l">기록 종결 · Legacy File</span>
-    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt">No. 07 / 07</span></div>
+    <span class="n">THE BUCK STOPS HERE<i>책임은 이 자리에서 멈춘다</i></span><span class="rt"><span class="pips"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></span><span class="pn">07 / 07</span></span></div>
     <div class="r2"><span class="s">1953년 1월 20일 퇴임</span><span class="s">역사 · 염초롱</span></div></div>
   <div class="head" style="border-bottom:0"><p class="kicker"><span class="pno">07</span><span>남긴 것과 그림자</span></p>
     <h2>결정은 끝나고, <em>평가가 남았다.</em></h2></div>
@@ -576,7 +597,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 // 스캔 연출 — 이동 거리로 재생 시간을 정해 모든 스캔을 같은 속도로,
 // 왼쪽 것이 끝나면 0.6초 뒤 다음 것이 시작한다.
-const SCAN={속도:120, 최소:2.2, 최대:9.0, 간격:0.67, 문턱:120};
+const SCAN={속도:120, 최소:2.2, 최대:9.0, 간격:0.9, 문턱:120};
 function setScan(){
   $$('.pg').forEach(pg=>{
     const phs=[...pg.querySelectorAll('.ph.scan')];
@@ -630,7 +651,7 @@ $$('.pg h1,.pg h2').forEach(h=>{let i=0;
       for(const ch of c.textContent){
         if(ch===' '){f.appendChild(document.createTextNode(' '));i++;continue}
         const sp=document.createElement('span');sp.className='tw';
-        sp.style.setProperty('--d',(310+i*52)+'ms');sp.textContent=ch;i++;f.appendChild(sp);}
+        sp.style.setProperty('--d',(450+i*52)+'ms');sp.textContent=ch;i++;f.appendChild(sp);}
       n.replaceChild(f,c);}
     else if(c.nodeType===1&&c.tagName!=='BR'){walk(c)}});})(h);
   h.dataset.typingMs=String(260+i*52);});
@@ -659,9 +680,10 @@ function go(n){
   $('#live').textContent=pgs[cur].getAttribute('aria-label');
   $('#noteMeta').textContent=notes[cur][0];$('#noteTitle').textContent=`${cur+1}면`;$('#noteText').textContent=notes[cur][1];
   document.body.classList.toggle('navback',back);
+  document.body.classList.toggle('navfinal',!back&&cur===N-1);
   prev.classList.add('on','leaving');prev.setAttribute('aria-hidden',true);leaveEl=prev;
   leaveT=setTimeout(()=>{prev.classList.remove('on','leaving');
-    document.body.classList.remove('navback');leaveT=0;leaveEl=null},470);
+    document.body.classList.remove('navback','navfinal');leaveT=0;leaveEl=null},back||cur<N-1?470:880);
 }
 $('#next').onclick=()=>go(cur+1);$('#prev').onclick=()=>go(cur-1);
 pgs.forEach((s,i)=>{const b=document.createElement('button');b.setAttribute('aria-label',`${i+1}면`);b.onclick=()=>go(i);$('#dots').append(b)});
