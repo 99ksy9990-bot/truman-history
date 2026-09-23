@@ -104,8 +104,11 @@ body.navfinal .pg.on{animation:pgSettle .86s cubic-bezier(.24,.8,.28,1) both}
 .exhibit-kicker .major{font-size:22px;font-weight:700;letter-spacing:2.4px}
 .exhibit-kicker .journey{font-size:18px;font-weight:700;letter-spacing:2.2px}
 .exhibit-kicker .dot{font-size:13px;color:var(--ink2)}
-.pg[aria-label^="1."] .exhibit-kicker{margin-bottom:8px}
-.kicker-ko{font-size:30px;letter-spacing:3px;line-height:1.2;color:var(--ink);margin-bottom:10px}
+/* 1면 표제 위계 : 영문 원문(작은 라벨) → 한글 표제(중간) → 헤드(큼) */
+.pg[aria-label^="1."] .exhibit-kicker{display:block;margin-bottom:16px;font-size:15px;letter-spacing:3.5px;color:var(--ink2);white-space:nowrap}
+.pg[aria-label^="1."] .exhibit-kicker span{font-size:inherit;font-weight:400;letter-spacing:inherit;color:inherit}
+.pg[aria-label^="1."] .exhibit-kicker .dot{margin:0 .35em}
+.kicker-ko{font-size:30px;letter-spacing:-.3px;line-height:1.2;color:var(--ink);margin-bottom:26px}
 .pg.on .kicker-ko{animation:kickIn .3s cubic-bezier(.2,.8,.3,1) .38s both}
 h1,h2{font-size:88px;line-height:1.1;letter-spacing:-2.5px;word-break:keep-all}
 h3{font-size:26px;line-height:1.34}
