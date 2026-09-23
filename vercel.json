@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/slides.pdf",
-      "destination": "/트루먼_3분_발표_지면형.pdf"
+      "destination": "/트루먼_3분30초_발표_지면형.pdf"
     },
     {
       "source": "/script.pdf",
