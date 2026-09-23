@@ -1,0 +1,5 @@
+deploy.sh
+.vercelignore
+tests
+artifacts
+README.md
