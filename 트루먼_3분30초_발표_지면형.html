@@ -104,6 +104,9 @@ body.navfinal .pg.on{animation:pgSettle .86s cubic-bezier(.24,.8,.28,1) both}
 .exhibit-kicker .major{font-size:22px;font-weight:700;letter-spacing:2.4px}
 .exhibit-kicker .journey{font-size:18px;font-weight:700;letter-spacing:2.2px}
 .exhibit-kicker .dot{font-size:13px;color:var(--ink2)}
+.pg[aria-label^="1."] .exhibit-kicker{margin-bottom:8px}
+.kicker-ko{font-size:30px;letter-spacing:3px;line-height:1.2;color:var(--ink);margin-bottom:10px}
+.pg.on .kicker-ko{animation:kickIn .3s cubic-bezier(.2,.8,.3,1) .38s both}
 h1,h2{font-size:88px;line-height:1.1;letter-spacing:-2.5px;word-break:keep-all}
 h3{font-size:26px;line-height:1.34}
 .pg[aria-label^="1."] h1{color:var(--spot)}
@@ -358,7 +361,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
   h1 .tw::after,h2 .tw::after{display:none!important}
   .ph.scan img{animation:none!important;object-position:center top!important}
   .pg,.pg.on,.pg.on.leaving{animation:none!important;box-shadow:none!important;opacity:1!important}
-  .kicker,.kicker .pno{animation:none!important;opacity:1!important;transform:none!important}
+  .kicker,.kicker .pno,.kicker-ko{animation:none!important;opacity:1!important;transform:none!important}
   .ph::after{display:none}
   /* 인쇄에서는 신문 결 텍스처가 거칠게 래스터화되므로 옅은 음영만 남긴다 */
   .pg::before{background-image:radial-gradient(120% 92% at 50% 46%,transparent 62%,#6d6c6212 100%)!important;
@@ -380,6 +383,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
   <div class="row" style="grid-template-columns:1.52fr .82fr;padding-top:41px">
     <div class="c">
       <div class="head" style="border-bottom:0;height:auto;padding-bottom:26px"><p class="kicker exhibit-kicker"><span class="minor">AN</span> <span class="major">ORDINARY MAN</span> <span class="dot">·</span> <span class="minor">HIS</span> <span class="major">EXTRAORDINARY</span> <span class="journey">JOURNEY</span></p>
+        <p class="kicker-ko">평범한 사람, 비범한 여정</p>
         <h1>모든 책임은 내가 <em>진다.</em></h1></div>
       <p class="deck">전쟁을 끝내고, 냉전을 열고,<br>대한민국 방어를 결정한 미국 제33대 대통령.</p>
       <div class="hr dbl"></div>
