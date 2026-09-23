@@ -98,7 +98,7 @@ body.navfinal .pg.on{animation:pgSettle .86s cubic-bezier(.24,.8,.28,1) both}
 @keyframes pnoStamp{0%{opacity:0;transform:scale(1.55)}58%{opacity:1;transform:scale(.95)}100%{opacity:1;transform:scale(1)}}
 .pg.on .kicker{animation:kickIn .3s cubic-bezier(.2,.8,.3,1) .31s both}
 .pg.on .kicker .pno{transform-origin:left center;animation:pnoStamp .34s cubic-bezier(.2,.85,.3,1) .33s both}
-.kicker .pno{flex:none;font-size:13px;letter-spacing:2.6px;line-height:1;border:1.5px solid var(--spot);padding:4px 7px 3px;text-indent:2.6px}
+.kicker .pno{flex:none;box-sizing:border-box;width:26px;height:26px;padding:0;display:flex;align-items:center;justify-content:center;font-size:13px;letter-spacing:1.4px;line-height:1;text-indent:1.4px;border:1.5px solid var(--spot)}
 .exhibit-kicker{display:flex;align-items:baseline;gap:10px;white-space:nowrap;letter-spacing:0}
 .exhibit-kicker .minor{font-size:12px;font-weight:700;letter-spacing:2px}
 .exhibit-kicker .major{font-size:22px;font-weight:700;letter-spacing:2.4px}
@@ -168,7 +168,7 @@ h3{font-size:26px;line-height:1.34}
 .pg.measuring{display:flex!important;visibility:hidden!important}
 .secret-stamp{position:absolute;left:50%;top:44%;z-index:2;width:220px;padding:12px 8px 9px;
   color:var(--stamp);border:6px double currentColor;background:#f4f2edd9;text-align:center;
-  font-family:Arial,sans-serif;font-size:34px;font-weight:900;line-height:1;letter-spacing:4px;
+  font-family:'Chosun',serif;font-size:33px;font-weight:700;line-height:1;letter-spacing:5px;text-indent:5px;
   opacity:1;transform:translate(-50%,-50%) rotate(-11deg);pointer-events:none}
 .secret-stamp small{display:block;margin-top:7px;font-size:13px;letter-spacing:5px;font-family:'Chosun',serif;font-weight:400}
 @keyframes stampIn{
