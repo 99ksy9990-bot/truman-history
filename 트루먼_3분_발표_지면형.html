@@ -32,13 +32,24 @@ b{font-weight:700;color:var(--spot)}
   transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center;
   background:var(--paper);padding:56px var(--pad);display:none;flex-direction:column;
   box-shadow:0 18px 60px #00000047}
-.pg.on{display:flex;animation:pgIn .32s cubic-bezier(.22,.61,.36,1) both}
-.pg.on.back{animation-name:pgInBack}
-@keyframes pgIn{from{opacity:0;transform:translate(-50%,-50%) scale(var(--s,1)) translateX(46px)}
-  to{opacity:1;transform:translate(-50%,-50%) scale(var(--s,1)) translateX(0)}}
-@keyframes pgInBack{from{opacity:0;transform:translate(-50%,-50%) scale(var(--s,1)) translateX(-46px)}
-  to{opacity:1;transform:translate(-50%,-50%) scale(var(--s,1)) translateX(0)}}
-@media (prefers-reduced-motion:reduce){.pg.on{animation:none!important}}
+/* 지면 넘김 : 위 장이 왼쪽으로 넘어가며 아래 장이 드러남 */
+.pg.on{display:flex;z-index:5;animation:pgSettle .46s cubic-bezier(.26,.82,.3,1) both}
+.pg.on.leaving{z-index:6;pointer-events:none;
+  box-shadow:0 18px 60px #00000047,52px 0 70px -24px #0000005e;
+  animation:pgOut .46s cubic-bezier(.22,.78,.3,1) both}
+body.navback .pg.on{z-index:6;animation:pgBackIn .46s cubic-bezier(.22,.78,.3,1) both;
+  box-shadow:0 18px 60px #00000047,52px 0 70px -24px #0000005e}
+body.navback .pg.on.leaving{z-index:5;box-shadow:0 18px 60px #00000047;
+  animation:pgTuck .46s cubic-bezier(.26,.82,.3,1) both}
+@keyframes pgOut{0%{transform:translate(-50%,-50%) scale(var(--s,1))}
+  100%{transform:translate(-50%,-50%) scale(var(--s,1)) translateX(-118%) rotate(-2.6deg)}}
+@keyframes pgBackIn{0%{transform:translate(-50%,-50%) scale(var(--s,1)) translateX(-118%) rotate(-2.6deg)}
+  100%{transform:translate(-50%,-50%) scale(var(--s,1))}}
+@keyframes pgSettle{0%{transform:translate(-50%,-50%) scale(calc(var(--s,1)*.972))}
+  100%{transform:translate(-50%,-50%) scale(var(--s,1))}}
+@keyframes pgTuck{0%{transform:translate(-50%,-50%) scale(var(--s,1))}
+  100%{transform:translate(-50%,-50%) scale(calc(var(--s,1)*.972))}}
+@media (prefers-reduced-motion:reduce){.pg.on,.pg.on.leaving{animation:none!important}}
 /* 신문지 결 */
 .pg::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
   background-image:
@@ -86,7 +97,7 @@ h3{font-size:26px;line-height:1.34}
   72%{transform:rotate(-.7deg) scaleX(1.035)}
   100%{transform:rotate(-1deg) scaleX(1)}}
 .pg.on .marker::after{animation:highlightSweep .38s cubic-bezier(.22,.75,.28,1)
-  calc(.46s + var(--marker-order)*.18s) both}
+  calc(.63s + var(--marker-order)*.18s) both}
 .pg[aria-label^="1."] .marker::after{bottom:.12em;height:.7em}
 
 /* 단 */
@@ -144,7 +155,7 @@ h3{font-size:26px;line-height:1.34}
   0%{opacity:0;transform:translate(-50%,-50%) rotate(-11deg) scale(1.75)}
   68%{opacity:1;transform:translate(-50%,-50%) rotate(-11deg) scale(.92)}
   100%{opacity:1;transform:translate(-50%,-50%) rotate(-11deg) scale(1)}}
-.pg.on .secret-stamp{animation:stampIn .52s cubic-bezier(.2,.8,.3,1.15) .78s both}
+.pg.on .secret-stamp{animation:stampIn .52s cubic-bezier(.2,.8,.3,1.15) .95s both}
 
 /* 부재 */
 .band{flex:none;display:grid;border-top:3px solid var(--rule);border-bottom:1px solid var(--rule)}
@@ -250,10 +261,10 @@ h1 .tw,h2 .tw{opacity:0;position:relative}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 [data-step]{opacity:0}
 .pg.on [data-step]{animation:rise .62s cubic-bezier(.2,.75,.3,1) both}
-.pg.on [data-step="1"]{animation-delay:.22s}
-.pg.on [data-step="2"]{animation-delay:.52s}
-.pg.on [data-step="3"]{animation-delay:.82s}
-.pg.on [data-step="4"]{animation-delay:1.12s}
+.pg.on [data-step="1"]{animation-delay:.39s}
+.pg.on [data-step="2"]{animation-delay:.69s}
+.pg.on [data-step="3"]{animation-delay:.99s}
+.pg.on [data-step="4"]{animation-delay:1.29s}
 @keyframes scan{
   0%{object-position:center 0%}
   50%{object-position:center 100%}
@@ -301,7 +312,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
   h1 .tw,h2 .tw{opacity:1!important;animation:none!important}
   h1 .tw::after,h2 .tw::after{display:none!important}
   .ph.scan img{animation:none!important;object-position:center top!important}
-  .pg,.pg.on{animation:none!important}
+  .pg,.pg.on,.pg.on.leaving{animation:none!important;box-shadow:none!important}
   .ph::after{display:none}
   /* 인쇄에서는 신문 결 텍스처가 거칠게 래스터화되므로 옅은 음영만 남긴다 */
   .pg::before{background-image:radial-gradient(120% 92% at 50% 46%,transparent 62%,#6d6c6212 100%)!important;
@@ -565,7 +576,7 @@ dialog .fine{font-size:14px;color:var(--ink2);margin-top:14px;line-height:1.7}
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 // 스캔 연출 — 이동 거리로 재생 시간을 정해 모든 스캔을 같은 속도로,
 // 왼쪽 것이 끝나면 0.6초 뒤 다음 것이 시작한다.
-const SCAN={속도:120, 최소:2.2, 최대:9.0, 간격:0.5, 문턱:120};
+const SCAN={속도:120, 최소:2.2, 최대:9.0, 간격:0.67, 문턱:120};
 function setScan(){
   $$('.pg').forEach(pg=>{
     const phs=[...pg.querySelectorAll('.ph.scan')];
@@ -619,7 +630,7 @@ $$('.pg h1,.pg h2').forEach(h=>{let i=0;
       for(const ch of c.textContent){
         if(ch===' '){f.appendChild(document.createTextNode(' '));i++;continue}
         const sp=document.createElement('span');sp.className='tw';
-        sp.style.setProperty('--d',(140+i*52)+'ms');sp.textContent=ch;i++;f.appendChild(sp);}
+        sp.style.setProperty('--d',(310+i*52)+'ms');sp.textContent=ch;i++;f.appendChild(sp);}
       n.replaceChild(f,c);}
     else if(c.nodeType===1&&c.tagName!=='BR'){walk(c)}});})(h);
   h.dataset.typingMs=String(260+i*52);});
@@ -632,11 +643,12 @@ const notes=[
 ['38초 · 1:43―2:21','세 번째, 우리 이야기입니다. 왼쪽은 남침 일주일 뒤 트루먼의 책상에 올라온 기밀 전황도입니다. 가운데는 그 전선을 지킨 미군 병사입니다. 6월 25일 북한이 38선을 넘었고, 트루먼은 이틀 만에 미군 투입을 결정합니다. 소련이 안전보장이사회에 불참해 거부권이 없었고, 그래서 유엔군이 만들어졌습니다. 전쟁은 낙동강까지 밀렸다가 인천상륙으로 뒤집히고, 중국군 개입으로 교착됩니다. 정전협정은 트루먼이 물러난 뒤, 아이젠하워 정부 때인 1953년 7월 27일에 맺어집니다.'],
 ['33초 · 2:21―2:54','네 번째. 1950년 10월 웨이크섬에서 마주한 두 사람은 정면으로 부딪칩니다. 트루먼은 협상을 통한 질서 회복을, 맥아더는 완전한 승리를 원했습니다. 맥아더는 만주 폭격까지 요구했습니다. 기준이 각각 문민통제와 군사적 승리였습니다. 결정타는 불복종이었습니다. 1951년 4월 11일 트루먼은 그를 해임합니다. 전쟁의 최종 결정권이 군이 아니라 국민이 뽑은 정부에 있음을 확인한 결정이었습니다.'],
 ['36초 · 2:54―3:30','고별연설에서 그는 이렇게 말했습니다. 대통령은 그가 누구든 결정해야 한다. 그는 책임을 누구에게도 넘길 수 없다. 트루먼이 남긴 것은 네 가지입니다. 전쟁 종결의 중대한 결정, 마셜 플랜으로 유럽 재건 지원, 대한민국 방어, 문민통제와 미군 인종분리 폐지입니다. 그림자도 네 가지입니다. 원폭의 민간인 희생, 냉전 대립과 핵무기 경쟁, 장기화된 한국전쟁, 그리고 오늘까지 이어지는 한반도 분단입니다. 업적과 그림자를 함께 보아야 합니다. 모든 책임은 내가 진다. 감사합니다.']];
+let leaveT=0,leaveEl=null;
 function go(n){
   const next=Math.max(0,Math.min(N-1,n));if(next===cur)return;
-  const back=next<cur;cur=next;
+  const back=next<cur,prev=pgs[cur];cur=next;
+  if(leaveT){clearTimeout(leaveT);leaveT=0;if(leaveEl){leaveEl.classList.remove('on','leaving');leaveEl=null}}
   pgs.forEach((s,i)=>{const active=i===cur,h=s.querySelector('h1,h2');
-    s.classList.toggle('back',active&&back);
     if(h){clearTimeout(typingTimers.get(h));h.classList.remove('typing-done');
       if(active)typingTimers.set(h,setTimeout(()=>h.classList.add('typing-done'),Number(h.dataset.typingMs)))}
     s.classList.toggle('on',active);s.setAttribute('aria-hidden',!active)});
@@ -646,6 +658,10 @@ function go(n){
   $('#prog').style.width=(cur+1)/N*100+'%';
   $('#live').textContent=pgs[cur].getAttribute('aria-label');
   $('#noteMeta').textContent=notes[cur][0];$('#noteTitle').textContent=`${cur+1}면`;$('#noteText').textContent=notes[cur][1];
+  document.body.classList.toggle('navback',back);
+  prev.classList.add('on','leaving');prev.setAttribute('aria-hidden',true);leaveEl=prev;
+  leaveT=setTimeout(()=>{prev.classList.remove('on','leaving');
+    document.body.classList.remove('navback');leaveT=0;leaveEl=null},470);
 }
 $('#next').onclick=()=>go(cur+1);$('#prev').onclick=()=>go(cur-1);
 pgs.forEach((s,i)=>{const b=document.createElement('button');b.setAttribute('aria-label',`${i+1}면`);b.onclick=()=>go(i);$('#dots').append(b)});
