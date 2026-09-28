@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#f5f4f0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="트루먼">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/assets/icon-180.png">
@@ -828,12 +828,7 @@ function fit(){const c=getComputedStyle(st),
   if(coarse.matches){const wide=w/h>=16/9,s=wide?h/1080:w/1920;
     R.setProperty('--s',s);R.setProperty('--page-w',(wide?w/s:1920)+'px');R.setProperty('--page-h',(wide?1080:h/s)+'px')}
   else{R.setProperty('--s',Math.min(w/1920,h/1080)*0.985);R.removeProperty('--page-w');R.removeProperty('--page-h')}}
-function viewSize(){
-  if(navigator.standalone===true&&screen.width&&screen.height){
-    const a=Math.min(screen.width,screen.height),z=Math.max(screen.width,screen.height);
-    return matchMedia('(orientation: portrait)').matches?[a,z]:[z,a]}
-  return [innerWidth,innerHeight]}
-function layout(){const [w,h]=viewSize(),touch=coarse.matches,b=document.body,
+function layout(){const w=innerWidth,h=innerHeight,touch=coarse.matches,b=document.body,
     rot=touch&&h>w&&w<600,R=document.documentElement.style;
   R.setProperty('--vw',w+'px');R.setProperty('--vh',h+'px');
   b.classList.toggle('touch',touch);b.classList.toggle('rot',rot);document.documentElement.classList.toggle('touch',touch);
