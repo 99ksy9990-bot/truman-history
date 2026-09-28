@@ -449,9 +449,10 @@ dialog{margin:auto;word-break:keep-all}
     <div class="c"><div class="ph mid"><img src="assets/84-5_official_portrait_1947.jpg" alt="1947년 해리 트루먼 백악관 공식 초상화"></div>
       <p class="cap"><b>백악관 공식 초상</b> · 1947 · 트루먼 도서관 소장번호 84-5</p></div>
   </div>
-  <div class="band" style="grid-template-columns:repeat(4,1fr)" data-step="2">
+  <div class="band" style="grid-template-columns:repeat(5,1fr)" data-step="2">
     <div><p class="d">1945.04</p><p class="t">루스벨트 서거 · 대통령 승계</p></div>
-    <div><p class="d">1945.08</p><p class="t">원자폭탄 사용 결정</p></div>
+    <div><p class="d">1945.07</p><p class="t">원자폭탄 사용 결정</p></div>
+    <div><p class="d">1945.08</p><p class="t">원폭 투하 · 일본 항복</p></div>
     <div><p class="d">1950.06</p><p class="t">대한민국 방어 결정</p></div>
     <div><p class="d">1951.04</p><p class="t">맥아더 해임</p></div>
   </div>
@@ -465,10 +466,10 @@ dialog{margin:auto;word-break:keep-all}
   <div class="head"><p class="kicker"><span>재임 7년 9개월</span></p>
     <h2>네 번의 <em>결단</em>이 세계를 바꿨다.</h2></div>
   <div class="row" style="grid-template-columns:repeat(4,1fr)">
-    <div class="c" data-step="1"><p class="big">1945<span class="mo">.08</span></p>
+    <div class="c" data-step="1"><p class="big">1945<span class="mo">.07</span></p>
       <div class="ph scan" style="margin-top:16px"><img src="assets/62-769a_potsdam_inscription.jpg" alt="포츠담 회담 사진 뒷면의 트루먼 자필 기록"></div>
-      <p class="cap">트루먼 자필 메모 · 1945. 7. 17.</p>
-      <h3>제2차 세계대전 종결</h3><p class="small"><b>원자폭탄 사용</b>을 승인했다.</p></div>
+      <p class="cap">포츠담 회담 사진 뒷면 트루먼 자필 · 사진 1945. 7. 17.</p>
+      <h3>제2차 세계대전 종결</h3><p class="small"><b>원자폭탄 사용</b>을 승인, 8월에 투하됐다.</p></div>
     <div class="c" data-step="2"><p class="big">1947<span class="mo">.03</span></p>
       <div class="ph mid" style="margin-top:16px"><img src="assets/59-1252-3_truman_doctrine_address.jpg" alt="1947년 3월 12일 의회에서 트루먼 독트린을 연설하는 트루먼"></div>
       <p class="cap">트루먼 독트린 연설 · 1947. 3. 12.</p>
@@ -648,7 +649,7 @@ dialog{margin:auto;word-break:keep-all}
     <a href="https://www.trumanlibrary.gov/photograph-records/69-1199a" target="_blank" rel="noopener">69-1199A 웨이크섬의 트루먼과 맥아더 · 1950. 10. 14. (2면)</a>
     <a href="https://www.trumanlibrary.gov/" target="_blank" rel="noopener">웨이크섬 회담의 맥아더와 트루먼 · 1950년 10월 · 트루먼 도서관 소장 (6면)</a>
     <a href="https://www.trumanlibrary.gov/photograph-records/63-782" target="_blank" rel="noopener">63-782 해리 트루먼 공식 초상</a>
-    <a href="https://www.trumanlibrary.gov/photograph-records/62-769a" target="_blank" rel="noopener">62-769a 포츠담 사진 뒷면의 트루먼 자필 · 1945. 7. 17.</a>
+    <a href="https://www.trumanlibrary.gov/photograph-records/62-769a" target="_blank" rel="noopener">62-769a 포츠담 회담 사진(1945. 7. 17.) 뒷면의 트루먼 자필 · 원폭을 스탈린에게 알린 일(7. 24.)을 적음</a>
     <a href="https://www.trumanlibrary.gov/photograph-records/59-1252-3" target="_blank" rel="noopener">59-1252-3 의회에서 트루먼 독트린을 연설하는 트루먼 · 1947. 3. 12.</a>
     <a href="https://www.trumanlibrary.gov/library/research-files/address-president-congress-recommending-assistance-greece-and-turkey" target="_blank" rel="noopener">트루먼 독트린 연설 인쇄본 · 미 하원 문서 제171호 · 1947. 3. 12. · 트루먼 도서관</a>
     <a href="https://www.archives.gov/milestone-documents/marshall-plan" target="_blank" rel="noopener">경제협조법(마셜 플랜) 원문 · 1948. 4. 3. · 미국 국립문서기록관리청 기록군 11 · 목록번호 299857</a>
@@ -758,6 +759,11 @@ $('#next').onclick=()=>go(cur+1);$('#prev').onclick=()=>go(cur-1);
 pgs.forEach((s,i)=>{const b=document.createElement('button');b.setAttribute('aria-label',`${i+1}면`);b.onclick=()=>go(i);$('#dots').append(b)});
 $('#notesBtn').onclick=()=>$('#noteDlg').showModal();$('#srcBtn').onclick=()=>$('#srcDlg').showModal();
 $$('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+// 창 바깥(어두운 배경)을 누르면 닫는다
+$$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();
+  if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}));
+// 마우스로 누른 막대 버튼은 포커스를 풀어, 뒤이은 Space가 타이머 대신 지면을 넘기게 한다
+$('#bar').addEventListener('click',e=>{if(e.detail>0)e.target.closest('button')?.blur()});
 const de=document.documentElement,
   canFS=!!(de.requestFullscreen||de.webkitRequestFullscreen),
   standalone=navigator.standalone===true||matchMedia('(display-mode: standalone),(display-mode: fullscreen)').matches;
@@ -834,6 +840,7 @@ function layout(){const w=innerWidth,h=innerHeight,touch=coarse.matches,b=docume
   R.setProperty('--vw',w+'px');R.setProperty('--vh',h+'px');
   b.classList.toggle('touch',touch);b.classList.toggle('rot',rot);document.documentElement.classList.toggle('touch',touch);
   b.classList.toggle('compact',(rot?h:w)<1000||(rot?w:h)<560);
+  setScan();
   $('#hint').textContent=touch?'밀어서 지면 이동 · 아래쪽을 누르면 메뉴':'← → 지면 이동 · T 타이머 · R 초기화 · N 대본 · F 전체화면';
   fit()}
 new ResizeObserver(fit).observe(st);addEventListener('resize',layout);
