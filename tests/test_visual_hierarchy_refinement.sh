@@ -28,14 +28,14 @@ const paperColor1=rgb1(await refinePage1.locator('.pg.on').evaluate(el=>getCompu
 const capSize1=parseFloat(await refinePage1.locator('.cap').first().evaluate(el=>getComputedStyle(el).fontSize));
 const briefSize1=parseFloat(await refinePage1.locator('.brief p:not(.bt)').first().evaluate(el=>getComputedStyle(el).fontSize));
 const twDelays1=await refinePage1.locator('.pg[aria-label^=\"1.\"] h1 .tw').evaluateAll(els=>els.slice(0,2).map(el=>parseFloat(el.style.getPropertyValue('--d'))));
-await refinePage1.locator('#dots button').nth(2).click();
+await refinePage1.locator('#dots button').nth(2).evaluate(b=>b.click());
 const cases1=await refinePage1.locator('.pg.on .decision-case').count();
 const issueColor1=cases1?await refinePage1.locator('.pg.on .decision-case.issue .lbl').evaluate(el=>getComputedStyle(el).color):null;
-await refinePage1.locator('#dots button').nth(3).click();
+await refinePage1.locator('#dots button').nth(3).evaluate(b=>b.click());
 const slide4Animations1=await refinePage1.locator('.pg.on .ph img').evaluateAll(els=>els.map(el=>getComputedStyle(el).animationName));
-await refinePage1.locator('#dots button').nth(5).click();
+await refinePage1.locator('#dots button').nth(5).evaluate(b=>b.click());
 const slide6Layout1=await refinePage1.locator('.pg.on .row').evaluate(el=>{const kids=[...el.children].map(c=>c.getBoundingClientRect().width);return {ratio:kids[1]/kids[0],tableFont:parseFloat(getComputedStyle(el.querySelector('table')).fontSize)}});
-await refinePage1.locator('#dots button').nth(6).click();
+await refinePage1.locator('#dots button').nth(6).evaluate(b=>b.click());
 const closeSize1=parseFloat(await refinePage1.locator('.pg.on .close .ct').evaluate(el=>getComputedStyle(el).fontSize));
 console.log({stageBrightness:brightness1(stageColor1),paperBrightness:brightness1(paperColor1),capSize:capSize1,briefSize:briefSize1,typewriterDelays:twDelays1,decisionCases:cases1,issueColor:issueColor1,slide4Animations:slide4Animations1,slide6Layout:slide6Layout1,closeSize:closeSize1});
 if(brightness1(stageColor1)<224||brightness1(paperColor1)<243) throw new Error('the full background needs to move closer to white');

@@ -1,6 +1,6 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#e3e1db">
+<meta name="theme-color" content="#f5f4f0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -36,7 +36,7 @@ em{font-style:normal;color:var(--spot)}
 b{font-weight:700;color:var(--spot)}
 
 #stage{position:fixed;inset:0;background:#e3e1db;display:grid;place-items:center}
-.pg{position:absolute;left:50%;top:50%;width:1920px;height:1080px;
+.pg{position:absolute;left:50%;top:50%;width:var(--page-w,1920px);height:var(--page-h,1080px);
   transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center;
   background:var(--paper);padding:56px var(--pad);display:none;flex-direction:column;
   box-shadow:0 18px 60px #00000047}
@@ -374,6 +374,11 @@ body.touch{touch-action:manipulation;overscroll-behavior:none;-webkit-tap-highli
 body.rot{position:fixed;top:0;left:var(--vw);width:var(--vh);height:var(--vw);
   transform:rotate(90deg);transform-origin:0 0}
 body.rot #stage{padding:env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) env(safe-area-inset-top)}
+html.touch,html.touch body,body.touch #stage{background:var(--paper)}
+body.touch #stage{padding:0;inset:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+body.touch.rot #stage{inset:env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) env(safe-area-inset-top)}
+body.touch .pg,body.touch .pg.on,body.touch .pg.on.leaving{box-shadow:none}
+body.touch #tick{display:none}
 body.rot #bar{bottom:12px}
 body.rot #tick{right:12px;bottom:10px}
 body.compact #dots{display:none}
@@ -624,10 +629,11 @@ dialog{margin:auto;word-break:keep-all}
 
 <dialog id="fsDlg"><button class="close" data-close>닫기 ×</button>
   <h3>아이폰 전체화면 보기</h3>
-  <ol><li>Safari의 <b>공유</b> 버튼을 누릅니다.</li>
+  <ol><li>카카오톡·인스타그램 등 앱 안에서 열었다면 메뉴에서 <b>Safari로 열기</b>를 먼저 누릅니다.</li>
+    <li>Safari의 <b>공유</b> 버튼을 누릅니다.</li>
     <li><b>홈 화면에 추가</b>를 고른 뒤 <b>추가</b>를 누릅니다.</li>
     <li>홈 화면의 <b>트루먼</b> 아이콘으로 열면 주소창 없이 지면이 화면을 가득 채웁니다.</li></ol>
-  <p class="fine">아이폰 Safari는 웹페이지의 전체화면 전환을 지원하지 않아 홈 화면 앱으로 엽니다. 세로로 들고 있으면 지면이 자동으로 가로로 돌아갑니다.</p></dialog>
+  <p class="fine">주소창과 아래 도구막대는 브라우저가 관리하는 영역이라 웹페이지가 덮을 수 없습니다. 홈 화면 앱으로 열면 두 막대가 모두 사라집니다. 세로로 들고 있으면 지면이 자동으로 가로로 돌아갑니다.</p></dialog>
 
 <dialog id="srcDlg"><button class="close" data-close>닫기 ×</button>
   <h3>사진 · 문서 출처</h3>
@@ -754,8 +760,15 @@ const de=document.documentElement,
   canFS=!!(de.requestFullscreen||de.webkitRequestFullscreen),
   standalone=navigator.standalone===true||matchMedia('(display-mode: standalone),(display-mode: fullscreen)').matches;
 if(standalone)$('#fsBtn').hidden=true;
+// 앱 안 브라우저(카카오톡·라인)는 주소창을 숨길 수 없어 기본 브라우저로 넘긴다
+const inApp=/KAKAOTALK|Line\/|Instagram|FBAN|FBAV|NAVER/i.test(navigator.userAgent);
+function openExternal(){const u=location.href.split('#')[0];
+  if(/KAKAOTALK/i.test(navigator.userAgent)){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(u);return true}
+  if(/Line\//i.test(navigator.userAgent)){location.href=u+(u.includes('?')?'&':'?')+'openExternalBrowser=1';return true}
+  return false}
 async function full(){
-  if(!canFS){if(!standalone)$('#fsDlg').showModal();return}
+  if(inApp&&openExternal())return;
+  if(!canFS||inApp){if(!standalone)$('#fsDlg').showModal();return}
   try{
     if(document.fullscreenElement||document.webkitFullscreenElement)
       await (document.exitFullscreen||document.webkitExitFullscreen).call(document);
@@ -775,10 +788,20 @@ function tick(){if(run){left=Math.max(0,Math.ceil((until-Date.now())/1000));if(!
 $('#timer').onclick=()=>{if(run){run=false;$('#timer').textContent='계속'}else{if(!left)left=210;until=Date.now()+left*1000;run=true;$('#timer').textContent='일시정지'}tick()};
 $('#reset').onclick=()=>{run=false;left=210;$('#timer').textContent='시작';tick()};
 setInterval(tick,250);tick();
-let pt;function peek(){document.body.classList.add('peek');clearTimeout(pt);pt=setTimeout(()=>document.body.classList.remove('peek'),2600)}
-['mousemove','pointerdown'].forEach(e=>document.addEventListener(e,peek,{passive:true}));
-$('#bar').addEventListener('mouseenter',()=>{clearTimeout(pt);document.body.classList.add('peek')});
-$('#bar').addEventListener('mouseleave',peek);
+// 조작 막대는 마우스를 화면 아래쪽으로 가져가거나(휴대폰은 아래쪽을 누르면) 나타난다
+let pt,onBar=false;const EDGE=140;
+function showBar(ms){document.body.classList.add('peek');clearTimeout(pt);
+  if(ms)pt=setTimeout(hideBar,ms)}
+function hideBar(){pt=0;if(!onBar)document.body.classList.remove('peek')}
+function hideBarSoon(){clearTimeout(pt);pt=setTimeout(hideBar,500)}
+document.addEventListener('mousemove',e=>{if(coarse.matches)return;
+  innerHeight-e.clientY<EDGE?showBar():document.body.classList.contains('peek')&&!onBar&&!pt?hideBarSoon():0},{passive:true});
+document.addEventListener('mouseleave',hideBarSoon);
+$('#bar').addEventListener('mouseenter',()=>{onBar=true;showBar()});
+$('#bar').addEventListener('mouseleave',()=>{onBar=false;hideBarSoon()});
+$('#bar').addEventListener('touchstart',()=>showBar(4000),{passive:true});
+$('#bar').addEventListener('focusin',()=>{onBar=true;showBar()});
+$('#bar').addEventListener('focusout',()=>{onBar=false;hideBarSoon()});
 document.addEventListener('keydown',e=>{if($$('dialog').some(d=>d.open))return;
   if(e.metaKey||e.ctrlKey||e.altKey)return;
   if(e.target.closest('input,textarea,select'))return;const k=e.key.toLowerCase();
@@ -786,29 +809,35 @@ document.addEventListener('keydown',e=>{if($$('dialog').some(d=>d.open))return;
   else if(['arrowleft','pageup'].includes(k)){e.preventDefault();go(cur-1)}
   if(k==='n')$('#notesBtn').click();if(k==='f')full();
   if(k==='t'){e.preventDefault();$('#timer').click()}if(k==='r'){e.preventDefault();$('#reset').click()}
-  if(e.key==='Home')go(0);if(e.key==='End')go(N-1);peek();});
+  if(e.key==='Home')go(0);if(e.key==='End')go(N-1);});
 let tx=0,ty=0;const st=$('#stage');
 st.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;ty=e.changedTouches[0].clientY},{passive:true});
 st.addEventListener('touchend',e=>{if(e.target.closest('button,a'))return;
   let dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
   if(document.body.classList.contains('rot'))[dx,dy]=[dy,-dx];
-  if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.5){dx<0?go(cur+1):go(cur-1)}},{passive:true});
+  if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.5){dx<0?go(cur+1):go(cur-1);return}
+  if(Math.abs(dx)<12&&Math.abs(dy)<12){const t=e.changedTouches[0],rot=document.body.classList.contains('rot'),
+      y=rot?innerWidth-t.clientX:t.clientY,h=rot?innerWidth:innerHeight;
+    y>h*.72?showBar(4000):(clearTimeout(pt),hideBar())}},{passive:true});
 const coarse=matchMedia('(pointer:coarse)');
 function fit(){const c=getComputedStyle(st),
     w=st.clientWidth-parseFloat(c.paddingLeft)-parseFloat(c.paddingRight),
     h=st.clientHeight-parseFloat(c.paddingTop)-parseFloat(c.paddingBottom);
-  document.documentElement.style.setProperty('--s',Math.min(w/1920,h/1080)*(coarse.matches?1:0.985))}
+  const R=document.documentElement.style;
+  if(coarse.matches){const wide=w/h>=16/9,s=wide?h/1080:w/1920;
+    R.setProperty('--s',s);R.setProperty('--page-w',(wide?w/s:1920)+'px');R.setProperty('--page-h',(wide?1080:h/s)+'px')}
+  else{R.setProperty('--s',Math.min(w/1920,h/1080)*0.985);R.removeProperty('--page-w');R.removeProperty('--page-h')}}
 function layout(){const w=innerWidth,h=innerHeight,touch=coarse.matches,b=document.body,
     rot=touch&&h>w&&w<600,R=document.documentElement.style;
   R.setProperty('--vw',w+'px');R.setProperty('--vh',h+'px');
-  b.classList.toggle('touch',touch);b.classList.toggle('rot',rot);
+  b.classList.toggle('touch',touch);b.classList.toggle('rot',rot);document.documentElement.classList.toggle('touch',touch);
   b.classList.toggle('compact',(rot?h:w)<1000||(rot?w:h)<560);
-  $('#hint').textContent=touch?'밀어서 지면 이동 · 화면을 누르면 메뉴':'← → 지면 이동 · T 타이머 · R 초기화 · N 대본 · F 전체화면';
+  $('#hint').textContent=touch?'밀어서 지면 이동 · 아래쪽을 누르면 메뉴':'← → 지면 이동 · T 타이머 · R 초기화 · N 대본 · F 전체화면';
   fit()}
 new ResizeObserver(fit).observe(st);addEventListener('resize',layout);
 addEventListener('orientationchange',()=>setTimeout(layout,150));
 coarse.addEventListener?.('change',layout);
 if(window.visualViewport)visualViewport.addEventListener('resize',layout);
 layout();
-go(0);peek();
+go(0);
 </script></body></html>
