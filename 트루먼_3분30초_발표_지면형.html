@@ -374,8 +374,10 @@ body.rot{position:fixed;top:0;left:var(--vw);width:var(--vh);height:var(--vw);
   transform:rotate(90deg);transform-origin:0 0}
 body.rot #stage{padding:env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) env(safe-area-inset-top)}
 html.touch,html.touch body,body.touch #stage{background:var(--paper)}
-body.touch #stage{padding:0;inset:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-body.touch.rot #stage{inset:env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) env(safe-area-inset-top)}
+body.touch #stage{padding:0;inset:0}
+body.touch .pg{--sa-l:env(safe-area-inset-left);--sa-r:env(safe-area-inset-right);
+  padding-left:max(var(--pad),calc(var(--sa-l) / var(--s) + 24px));padding-right:max(var(--pad),calc(var(--sa-r) / var(--s) + 24px))}
+body.touch.rot .pg{--sa-l:env(safe-area-inset-top);--sa-r:env(safe-area-inset-bottom)}
 body.touch .pg,body.touch .pg.on,body.touch .pg.on.leaving{box-shadow:none}
 body.touch #tick{display:none}
 body.rot #bar{bottom:12px}
@@ -758,7 +760,6 @@ $$('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 const de=document.documentElement,
   canFS=!!(de.requestFullscreen||de.webkitRequestFullscreen),
   standalone=navigator.standalone===true||matchMedia('(display-mode: standalone),(display-mode: fullscreen)').matches;
-if(standalone)$('#fsBtn').hidden=true;
 // 앱 안 브라우저(카카오톡·라인)는 주소창을 숨길 수 없어 기본 브라우저로 넘긴다
 const inApp=/KAKAOTALK|Line\/|Instagram|FBAN|FBAV|NAVER/i.test(navigator.userAgent);
 function openExternal(){const u=location.href.split('#')[0];
@@ -766,6 +767,7 @@ function openExternal(){const u=location.href.split('#')[0];
   if(/Line\//i.test(navigator.userAgent)){location.href=u+(u.includes('?')?'&':'?')+'openExternalBrowser=1';return true}
   return false}
 async function full(){
+  if(standalone){onBar=false;clearTimeout(pt);hideBar();return}
   if(inApp&&openExternal())return;
   if(!canFS||inApp){if(!standalone)$('#fsDlg').showModal();return}
   try{
@@ -826,7 +828,12 @@ function fit(){const c=getComputedStyle(st),
   if(coarse.matches){const wide=w/h>=16/9,s=wide?h/1080:w/1920;
     R.setProperty('--s',s);R.setProperty('--page-w',(wide?w/s:1920)+'px');R.setProperty('--page-h',(wide?1080:h/s)+'px')}
   else{R.setProperty('--s',Math.min(w/1920,h/1080)*0.985);R.removeProperty('--page-w');R.removeProperty('--page-h')}}
-function layout(){const w=innerWidth,h=innerHeight,touch=coarse.matches,b=document.body,
+function viewSize(){
+  if(navigator.standalone===true&&screen.width&&screen.height){
+    const a=Math.min(screen.width,screen.height),z=Math.max(screen.width,screen.height);
+    return matchMedia('(orientation: portrait)').matches?[a,z]:[z,a]}
+  return [innerWidth,innerHeight]}
+function layout(){const [w,h]=viewSize(),touch=coarse.matches,b=document.body,
     rot=touch&&h>w&&w<600,R=document.documentElement.style;
   R.setProperty('--vw',w+'px');R.setProperty('--vh',h+'px');
   b.classList.toggle('touch',touch);b.classList.toggle('rot',rot);document.documentElement.classList.toggle('touch',touch);
