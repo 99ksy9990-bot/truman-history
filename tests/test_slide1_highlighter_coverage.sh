@@ -19,6 +19,6 @@ for _ in {1..40}; do
   sleep 0.1
 done
 
-aside_output="$(aside repl "const coverPage1=await openTab('http://127.0.0.1:${port}/?test=${cache_key}'); const coverage1=await coverPage1.locator('.pg.on .marker').first().evaluate(el=>{const base=getComputedStyle(el);const mark=getComputedStyle(el,'::after');return {fontSize:parseFloat(base.fontSize),height:parseFloat(mark.height),bottom:parseFloat(mark.bottom)}}); console.log({slide1Highlighter:coverage1}); if(coverage1.height/coverage1.fontSize<.66||coverage1.bottom/coverage1.fontSize<.1) throw new Error('slide 1 highlighter must rise into more of the letterforms'); await closeTab(coverPage1); console.log('SLIDE1_HIGHLIGHTER_COVERAGE_TEST_PASS');")"
+aside_output="$(aside repl "const coverPage1=await openTab('http://127.0.0.1:${port}/?test=${cache_key}'); const coverage1=await coverPage1.locator('.pg.on:not(.leaving) .marker').first().evaluate(el=>{const base=getComputedStyle(el);const mark=getComputedStyle(el,'::after');return {fontSize:parseFloat(base.fontSize),height:parseFloat(mark.height),bottom:parseFloat(mark.bottom)}}); console.log({slide1Highlighter:coverage1}); if(coverage1.height/coverage1.fontSize<.66||coverage1.bottom/coverage1.fontSize<.1) throw new Error('slide 1 highlighter must rise into more of the letterforms'); await closeTab(coverPage1); console.log('SLIDE1_HIGHLIGHTER_COVERAGE_TEST_PASS');")"
 printf '%s\n' "$aside_output"
 grep -q 'SLIDE1_HIGHLIGHTER_COVERAGE_TEST_PASS' <<<"$aside_output"
