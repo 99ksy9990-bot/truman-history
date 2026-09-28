@@ -33,7 +33,7 @@ def wrap(rich, width=XMAX - X0):
         words.append(cur)
     lines, line, w = [], [], 0.0
     for word in words:
-        ww = sum(font.text_length(t, fontsize=SIZE) for t, _ in word)
+        ww = sum(font.text_length(t.replace('\u00a0', ' '), fontsize=SIZE) for t, _ in word)
         trail = font.text_length(' ', fontsize=SIZE) if word[-1][0] == ' ' else 0
         if line and w + ww - trail > width:
             lines.append(line); line, w = [], 0.0
@@ -43,23 +43,34 @@ def wrap(rich, width=XMAX - X0):
     return lines
 
 
-def rewrite(page, baselines, rich):
-    """baselines에 있던 줄들을 지우고 rich 문장을 같은 자리에 다시 쓴다."""
-    lines = wrap(rich)
-    assert len(lines) <= len(baselines), f'{len(lines)}줄 > 원래 {len(baselines)}줄'
+def erase(page, baselines, x0=X0 - 0.6, x1=XMAX + 1, up=9.6, down=2.6):
+    """baselines 줄의 글자를 지운다."""
     for y in baselines:
-        page.add_redact_annot(fitz.Rect(X0 - 0.6, y - 9.6, XMAX + 1, y + 2.6), fill=None)
+        page.add_redact_annot(fitz.Rect(x0, y - up, x1, y + down), fill=None)
     page.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE, graphics=fitz.PDF_REDACT_LINE_ART_NONE)
+
+
+def draw(page, baselines, rich, x0=X0, size=SIZE, ink=INK, spot=SPOT, bold_mode=2):
+    """rich 문장을 줄바꿈해 baselines 자리에 쓴다. 줄 수가 넘치면 멈춘다."""
+    lines = wrap(rich, XMAX - x0) if size == SIZE else [[(t, b) for t, b in parse(rich)]]
+    assert len(lines) <= len(baselines), f'{len(lines)}줄 > 자리 {len(baselines)}줄'
     for y, line in zip(baselines, lines):
         tw_plain, tw_bold = fitz.TextWriter(page.rect), fitz.TextWriter(page.rect)
-        x = X0
+        x = x0
         for text, bold in line:
-            (tw_bold if bold else tw_plain).append((x, y), text, font=font, fontsize=SIZE)
-            x += font.text_length(text, fontsize=SIZE)
-        tw_plain.write_text(page, color=INK)
-        # 굵은 남색: 원본(크롬 가짜 굵기)과 비슷하게 채움 + 얇은 외곽선
-        tw_bold.write_text(page, color=SPOT, render_mode=2)
+            text = text.replace('\u00a0', ' ')
+            (tw_bold if bold else tw_plain).append((x, y), text, font=font, fontsize=size)
+            x += font.text_length(text, fontsize=size)
+        tw_plain.write_text(page, color=ink)
+        # 굵은 글씨: 원본(크롬 가짜 굵기)과 비슷하게 채움 + 얇은 외곽선
+        tw_bold.write_text(page, color=spot, render_mode=bold_mode)
     return lines
+
+
+def rewrite(page, baselines, rich):
+    """baselines에 있던 줄들을 지우고 rich 문장을 같은 자리에 다시 쓴다."""
+    erase(page, baselines)
+    return draw(page, baselines, rich)
 
 
 def fits(rich, n):
