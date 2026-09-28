@@ -37,7 +37,7 @@ await requestPage1.locator('#dots button').nth(2).evaluate(b=>b.click());
 const slide3Document1=await requestPage1.locator('.pg.on:not(.leaving) .c').nth(1).evaluate(el=>{const img=el.querySelector('img');return {src:img.currentSrc,naturalWidth:img.naturalWidth,animation:getComputedStyle(img).animationName,caption:el.querySelector('.cap').innerText.replace(/\\s+/g,' ').trim()}});
 const slide3DecisionSpacing1=await requestPage1.locator('.pg.on:not(.leaving) .decision-case').evaluateAll(els=>els.map(el=>{const label=el.querySelector('.lbl').getBoundingClientRect(),body=el.querySelector('.body').getBoundingClientRect(),box=el.getBoundingClientRect();return {top:body.top-label.bottom,bottom:box.bottom-body.bottom}}));
 console.log({slide3Document:slide3Document1,slide3DecisionSpacing:slide3DecisionSpacing1});
-if(!slide3Document1.src.endsWith('/assets/04_japan_surrender.jpg')||slide3Document1.naturalWidth!==377||slide3Document1.animation!=='scan'||!slide3Document1.caption.includes('일본 항복 문서')||!slide3Document1.caption.includes('1945년 9월 2일')||slide3Document1.caption.includes('자필 메모')||slide3DecisionSpacing1.length!==2) throw new Error('slide 3 must replace the handwritten memo with the supplied Japanese surrender document, use the same scan effect as slide 4, and give both decision texts equal vertical space above and below');
+if(!slide3Document1.src.endsWith('/assets/04_japan_surrender.jpg')||slide3Document1.naturalWidth!==377||slide3Document1.animation!=='scanTo, focusZoom'||!slide3Document1.caption.includes('일본 항복 문서')||!slide3Document1.caption.includes('1945년 9월 2일')||slide3Document1.caption.includes('자필 메모')||slide3DecisionSpacing1.length!==2) throw new Error('slide 3 must replace the handwritten memo with the supplied Japanese surrender document, use the same scan effect as slide 4, and give both decision texts equal vertical space above and below');
 
 await requestPage1.locator('#dots button').nth(3).evaluate(b=>b.click());
 const slide4Animation1=await requestPage1.locator('.pg.on:not(.leaving) .ph img').evaluateAll(els=>els.map(el=>getComputedStyle(el).animationName));
@@ -48,11 +48,11 @@ await requestPage1.locator('.pg.on:not(.leaving) .ph img').evaluateAll(els=>els.
 await sleep(60);
 const slide4End1=await requestPage1.locator('.pg.on:not(.leaving) .ph img').evaluateAll(els=>els.map(el=>getComputedStyle(el).objectPosition));
 console.log({slide4Animation:slide4Animation1,slide4Bottom:slide4Bottom1,slide4End:slide4End1});
-if(slide4Animation1.length!==3||slide4Animation1.some(name=>name!=='scan')||slide4Bottom1.some(pos=>parseFloat(pos.split(' ')[1])<90)||slide4End1.some(pos=>parseFloat(pos.split(' ')[1])>5)) throw new Error('all slide 4 documents must scan down, return upward, and stop at the top like slide 2');
+if(slide4Animation1.length!==3||slide4Animation1.slice(0,2).some(name=>name!=='scan')||slide4Animation1[2]!=='scanTo, focusZoom'||slide4Bottom1.slice(0,2).some(pos=>parseFloat(pos.split(' ')[1])<90)||slide4End1.slice(0,2).some(pos=>parseFloat(pos.split(' ')[1])>5)) throw new Error('slide 4: the first two documents scan down and back up; the treaty scans to its signatures and zooms');
 
 // 6·7면 세부 배치는 이후 개편(23991e9 6면 표·사진 순서, d816a6d·b74eb67 7면 세 쌍)으로 바뀌어
 // test_visual_hierarchy_refinement·test_revised_historical_content·test_last_slide_no_replay가 현재 기준으로 검사한다.
-if(!slide2MacArthurImage1.src.endsWith('assets/69-1199a_truman_macarthur_wake_island.jpg')||slide2MacArthurImage1.naturalWidth!==800) throw new Error('slide 2 must use the 69-1199a Wake Island photo');
+if(!slide2MacArthurImage1.src.endsWith('assets/wake_island_macarthur_truman.jpg')||slide2MacArthurImage1.naturalWidth!==611) throw new Error('slide 2 must use the standing Wake Island photo (swapped with slide 6)');
 await closeTab(requestPage1);
 console.log('REQUESTED_LAYOUT_REVISION_TEST_PASS');
 ")"
