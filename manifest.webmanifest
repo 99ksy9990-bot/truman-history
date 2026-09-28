@@ -4,14 +4,14 @@
   "lang": "ko",
   "start_url": "/",
   "scope": "/",
-  "display": "fullscreen",
+  "display": "standalone",
   "display_override": [
     "fullscreen",
     "standalone"
   ],
   "orientation": "landscape",
-  "background_color": "#e3e1db",
-  "theme_color": "#e3e1db",
+  "background_color": "#f5f4f0",
+  "theme_color": "#f5f4f0",
   "icons": [
     {
       "src": "/assets/icon-192.png",
