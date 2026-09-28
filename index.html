@@ -189,13 +189,14 @@ h3{font-size:26px;line-height:1.34}
   background-size:2.6px 2.6px;opacity:.38}
 .ph.mid img{object-position:center center}
 /* 1면 초상: 들어서면 약 7초 동안 한 번만 다가간다(앞쪽에 움직임을 몰아 체감되게, 되돌아가지 않음) */
-/* 초점 확대: 2면은 사진 네 장이 다 나타난 뒤 메모의 'Atom Bomb'으로, 3면은 서명 높이까지 훑어 내려가 일본 대표 서명으로 */
+/* 초점 확대: 2면은 사진 네 장이 다 나타난 뒤 메모의 'Atom Bomb'으로, 3면·4면은 서명 높이까지 훑어 내려가 서명으로
+   (3면 일본 대표 서명, 4면 북대서양 조약 미국 대표 애치슨 서명) */
 @keyframes focusZoom{from{transform:none}to{transform:translate(var(--tx,0px),var(--ty,0px)) scale(var(--fz,1))}}
 @keyframes scanTo{from{object-position:50% 0%}to{object-position:50% var(--fy,100%)}}
 .pg img[data-focus]{transform-origin:0 0}
 .pg[aria-label^="2."] img[data-focus]{object-position:center top}
 .pg[aria-label^="2."].on img[data-focus]{animation:focusZoom 1.8s cubic-bezier(.45,0,.2,1) 2.5s both}
-.pg[aria-label^="3."].on .ph.scan img[data-focus]{animation:scanTo calc(var(--sdur,4.4s)*.5) cubic-bezier(.4,0,.35,1) var(--sd,.9s) both,
+.pg.on .ph.scan img[data-focus]{animation:scanTo calc(var(--sdur,4.4s)*.5) cubic-bezier(.4,0,.35,1) var(--sd,.9s) both,
   focusZoom 1.8s cubic-bezier(.45,0,.2,1) calc(var(--sd,.9s) + var(--sdur,4.4s)*.5 + .3s) both}
 @keyframes pushIn{from{transform:scale(1)}to{transform:scale(1.12)}}
 .pg[aria-label^="1."] .ph img{transform-origin:50% 38%}
@@ -544,7 +545,7 @@ dialog{margin:auto;word-break:keep-all}
       <p class="cap"><b>경제협조법 원문</b> · 공법 제472호 · 1948. 4. 3. 백악관 접수</p>
       <h3>마셜 플랜</h3><p class="small"><b>약 130억 달러</b>로 유럽을 되살렸다.</p></div>
     <div class="c" data-step="3"><p class="lbl">1949.04 · 군사</p>
-      <div class="ph scan"><img src="assets/north_atlantic_treaty_1949.jpg" alt="북대서양 조약 원본과 서명면"></div>
+      <div class="ph scan"><img data-focus="255,752,440,840" data-pan src="assets/north_atlantic_treaty_1949.jpg" alt="북대서양 조약 원본과 서명면"></div>
       <p class="cap"><b>북대서양 조약 원본</b> · 제5조와 각국 서명면</p>
       <h3>NATO 창설</h3><p class="small">서방 12개국이 <b>집단방위</b>를 약속했다.</p></div>
   </div>
