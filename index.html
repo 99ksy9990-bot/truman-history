@@ -188,10 +188,10 @@ h3{font-size:26px;line-height:1.34}
   background-image:radial-gradient(circle,#d9d7cf .6px,transparent .66px);
   background-size:2.6px 2.6px;opacity:.38}
 .ph.mid img{object-position:center center}
-/* 1면 초상: 들어서면 약 10초 동안 한 번만 천천히 다가간다(되돌아가지 않음) */
-@keyframes pushIn{from{transform:scale(1)}to{transform:scale(1.05)}}
+/* 1면 초상: 들어서면 약 7초 동안 한 번만 다가간다(앞쪽에 움직임을 몰아 체감되게, 되돌아가지 않음) */
+@keyframes pushIn{from{transform:scale(1)}to{transform:scale(1.12)}}
 .pg[aria-label^="1."] .ph img{transform-origin:50% 38%}
-.pg[aria-label^="1."].on .ph img{animation:pushIn 10s cubic-bezier(.3,.1,.3,1) .6s both}
+.pg[aria-label^="1."].on .ph img{animation:pushIn 7s cubic-bezier(.22,.61,.36,1) .3s both}
 .secret-map.scan img{animation:none!important;object-position:center top}
 .ph.noscan img{animation:none!important;object-position:center top!important}
 .pg.measuring{display:flex!important;visibility:hidden!important}
