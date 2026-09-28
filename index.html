@@ -188,6 +188,10 @@ h3{font-size:26px;line-height:1.34}
   background-image:radial-gradient(circle,#d9d7cf .6px,transparent .66px);
   background-size:2.6px 2.6px;opacity:.38}
 .ph.mid img{object-position:center center}
+/* 1면 초상: 들어서면 약 10초 동안 한 번만 천천히 다가간다(되돌아가지 않음) */
+@keyframes pushIn{from{transform:scale(1)}to{transform:scale(1.05)}}
+.pg[aria-label^="1."] .ph img{transform-origin:50% 38%}
+.pg[aria-label^="1."].on .ph img{animation:pushIn 10s cubic-bezier(.3,.1,.3,1) .6s both}
 .secret-map.scan img{animation:none!important;object-position:center top}
 .ph.noscan img{animation:none!important;object-position:center top!important}
 .pg.measuring{display:flex!important;visibility:hidden!important}
@@ -402,6 +406,7 @@ dialog{margin:auto;word-break:keep-all}
   h1 .tw,h2 .tw{opacity:1!important;animation:none!important}
   h1 .tw::after,h2 .tw::after{display:none!important}
   .ph.scan img{animation:none!important;object-position:center top!important}
+  .pg[aria-label^="1."] .ph img{animation:none!important;transform:none!important}
   .pg,.pg.on,.pg.on.leaving{animation:none!important;box-shadow:none!important;opacity:1!important}
   .kicker,.kicker .pno,.kicker-ko{animation:none!important;opacity:1!important;transform:none!important}
   .ph::after{display:none}
