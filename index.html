@@ -189,6 +189,14 @@ h3{font-size:26px;line-height:1.34}
   background-size:2.6px 2.6px;opacity:.38}
 .ph.mid img{object-position:center center}
 /* 1면 초상: 들어서면 약 7초 동안 한 번만 다가간다(앞쪽에 움직임을 몰아 체감되게, 되돌아가지 않음) */
+/* 초점 확대: 2면은 사진 네 장이 다 나타난 뒤 메모의 'Atom Bomb'으로, 3면은 서명 높이까지 훑어 내려가 일본 대표 서명으로 */
+@keyframes focusZoom{from{transform:none}to{transform:translate(var(--tx,0px),var(--ty,0px)) scale(var(--fz,1))}}
+@keyframes scanTo{from{object-position:50% 0%}to{object-position:50% var(--fy,100%)}}
+.pg img[data-focus]{transform-origin:0 0}
+.pg[aria-label^="2."] img[data-focus]{object-position:center top}
+.pg[aria-label^="2."].on img[data-focus]{animation:focusZoom 1.8s cubic-bezier(.45,0,.2,1) 2.5s both}
+.pg[aria-label^="3."].on .ph.scan img[data-focus]{animation:scanTo calc(var(--sdur,4.4s)*.5) cubic-bezier(.4,0,.35,1) var(--sd,.9s) both,
+  focusZoom 1.8s cubic-bezier(.45,0,.2,1) calc(var(--sd,.9s) + var(--sdur,4.4s)*.5 + .3s) both}
 @keyframes pushIn{from{transform:scale(1)}to{transform:scale(1.12)}}
 .pg[aria-label^="1."] .ph img{transform-origin:50% 38%}
 .pg[aria-label^="1."].on .ph img{animation:pushIn 7s cubic-bezier(.22,.61,.36,1) .3s both}
@@ -406,7 +414,7 @@ dialog{margin:auto;word-break:keep-all}
   h1 .tw,h2 .tw{opacity:1!important;animation:none!important}
   h1 .tw::after,h2 .tw::after{display:none!important}
   .ph.scan img{animation:none!important;object-position:center top!important}
-  .pg[aria-label^="1."] .ph img{animation:none!important;transform:none!important}
+  .pg[aria-label^="1."] .ph img,.pg img[data-focus]{animation:none!important;transform:none!important}
   .pg,.pg.on,.pg.on.leaving{animation:none!important;box-shadow:none!important;opacity:1!important}
   .kicker,.kicker .pno,.kicker-ko{animation:none!important;opacity:1!important;transform:none!important}
   .ph::after{display:none}
@@ -471,7 +479,7 @@ dialog{margin:auto;word-break:keep-all}
     <h2>네 번의 <em>결단</em>이 세계를 바꿨다.</h2></div>
   <div class="row" style="grid-template-columns:repeat(4,1fr)">
     <div class="c" data-step="1"><p class="big">1945<span class="mo">.07</span></p>
-      <div class="ph noscan" style="margin-top:16px"><img src="assets/62-769a_potsdam_inscription.jpg" alt="포츠담 회담 사진 뒷면의 트루먼 자필 기록"></div>
+      <div class="ph" style="margin-top:16px"><img data-focus="55,280,310,352" src="assets/62-769a_potsdam_inscription.jpg" alt="포츠담 회담 사진 뒷면의 트루먼 자필 기록"></div>
       <p class="cap">포츠담 회담 사진 뒷면 트루먼 자필 · 사진 1945. 7. 17.</p>
       <h3>제2차 세계대전 종결</h3><p class="small"><b>원자폭탄 사용</b>을 승인, 8월에 투하됐다.</p></div>
     <div class="c" data-step="2"><p class="big">1947<span class="mo">.03</span></p>
@@ -499,7 +507,7 @@ dialog{margin:auto;word-break:keep-all}
   <div class="row" style="grid-template-columns:1.05fr .78fr 1.05fr">
     <div class="c"><div class="ph mid"><img src="assets/61-56_fat_man.jpg" alt="나가사키에 투하된 팻맨형 원자폭탄"></div>
       <p class="cap"><b>팻맨형 원자폭탄</b> · 나가사키에 투하된 형식<br>로스앨러모스 연구소</p></div>
-    <div class="c" data-step="1"><div class="ph scan"><img src="assets/04_japan_surrender.jpg" alt="일본 항복 문서 원본"></div>
+    <div class="c" data-step="1"><div class="ph scan"><img data-focus="150,528,332,658" data-pan src="assets/04_japan_surrender.jpg" alt="일본 항복 문서 원본"></div>
       <p class="cap"><b>일본 항복 문서</b><br>1945년 9월 2일 · 도쿄만 미주리함에서 서명</p></div>
     <div class="c lead2" data-step="2">
       <div class="band big" style="grid-template-columns:repeat(3,1fr);margin-bottom:28px">
@@ -699,6 +707,27 @@ function setScan(){
     });
   });
 }
+// 초점 확대: data-focus="x0,y0,x1,y1"(원본 픽셀) 영역이 틀 가운데를 채우도록 배율·이동을 계산한다.
+// data-pan이면 먼저 그 높이가 틀 가운데 오도록 훑어 내려간다. 확대해도 사진 가장자리가 틀 안에 들어오지 않게 막는다
+function setFocus(){
+  $$('.pg img[data-focus]').forEach(im=>{
+    const pg=im.closest('.pg'),hidden=!pg.classList.contains('on');
+    if(hidden)pg.classList.add('measuring');
+    const W=im.clientWidth,H=im.clientHeight,iw=im.naturalWidth,ih=im.naturalHeight;
+    if(hidden)pg.classList.remove('measuring');
+    if(!W||!iw)return;
+    const [x0,y0,x1,y1]=im.dataset.focus.split(',').map(Number),s=Math.max(W/iw,H/ih),
+      ox=(W-iw*s)/2,spare=H-ih*s,cy=(y0+y1)/2;
+    const p=im.hasAttribute('data-pan')&&spare<0?Math.min(1,Math.max(0,(H/2-cy*s)/spare)):0,oy=spare*p;
+    const k=Math.min(2.4,.92*Math.min(W/((x1-x0)*s),H/((y1-y0)*s)));
+    const bx=ox+(x0+x1)/2*s,by=oy+cy*s,clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
+    const tx=clamp(W/2-k*bx,W-k*(ox+iw*s),-k*ox),ty=clamp(H/2-k*by,H-k*(oy+ih*s),-k*oy);
+    im.style.setProperty('--fy',(p*100).toFixed(2)+'%');
+    im.style.setProperty('--fz',k.toFixed(3));
+    im.style.setProperty('--tx',tx.toFixed(1)+'px');im.style.setProperty('--ty',ty.toFixed(1)+'px');
+  });
+}
+addEventListener('load',setFocus);
 addEventListener('load',setScan);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setScan);
 setScan();
@@ -844,7 +873,7 @@ function layout(){const w=innerWidth,h=innerHeight,touch=coarse.matches,b=docume
   R.setProperty('--vw',w+'px');R.setProperty('--vh',h+'px');
   b.classList.toggle('touch',touch);b.classList.toggle('rot',rot);document.documentElement.classList.toggle('touch',touch);
   b.classList.toggle('compact',(rot?h:w)<1000||(rot?w:h)<560);
-  setScan();
+  setScan();setFocus();
   $('#hint').textContent=touch?'밀어서 지면 이동 · 아래쪽을 누르면 메뉴':'← → 지면 이동 · T 타이머 · R 초기화 · N 대본 · F 전체화면';
   fit()}
 new ResizeObserver(fit).observe(st);addEventListener('resize',layout);
