@@ -454,8 +454,8 @@ body.intro-active #bar,body.intro-active #hint,body.intro-active #prog{visibilit
 </style></head><body>
 
 <section id="intro" aria-label="30초 도입 영상">
-<video id="introVideo" playsinline preload="metadata" poster="assets/intro-poster.jpg" aria-label="트루먼 30초 다큐"><source src="assets/intro.mp4" type="video/mp4"></video>
-<div id="introPrompt"><h1>한 사람의 결정은 어디까지 세계를 바꿀까</h1><p>30초 영상 + 3분 30초 발표</p><button id="introPlay">영상으로 시작</button><p id="introError" hidden>영상을 재생할 수 없습니다. 발표 바로 시작을 눌러 주세요.</p></div>
+<video id="introVideo" playsinline preload="metadata" poster="assets/intro-poster.jpg?v=20261002-v11" aria-label="트루먼 30초 다큐"><source src="assets/intro.mp4?v=20261002-v11" type="video/mp4"></video>
+<div id="introPrompt"><h1>한 사람의 결정은 어디까지 세계를 바꿀까</h1><p>용강중학교 · 도덕 발표 자료</p><p>30초 예고편 + 3분 30초 본 발표</p><button id="introPlay">영상으로 시작</button><p id="introError" hidden>영상을 재생할 수 없습니다. 발표 바로 시작을 눌러 주세요.</p></div>
 <button id="introSkip">발표 바로 시작</button></section>
 
 <div id="prog"></div>
@@ -864,7 +864,7 @@ $('#reset').onclick=()=>{run=false;left=210;$('#timer').textContent='시작';tic
 setInterval(tick,250);tick();
 // 조작 막대는 마우스를 화면 아래쪽으로 가져가거나(휴대폰은 아래쪽을 누르면) 나타난다
 let pt,onBar=false;const EDGE=140;
-function showBar(ms){document.body.classList.add('peek');clearTimeout(pt);
+function showBar(ms){if(document.body.classList.contains('intro-active'))return;document.body.classList.add('peek');clearTimeout(pt);
   if(ms)pt=setTimeout(hideBar,ms)}
 function hideBar(){pt=0;if(!onBar)document.body.classList.remove('peek')}
 function hideBarSoon(){clearTimeout(pt);pt=setTimeout(hideBar,500)}
@@ -917,11 +917,13 @@ layout();
 go(0);
 
 const intro=document.querySelector('#intro'),introVideo=document.querySelector('#introVideo');
-function finishIntro(){introVideo.pause();intro.hidden=true;document.body.classList.remove('intro-active');document.querySelector('#stage').inert=false;document.querySelector('#bar').inert=false;cur=-1;go(0);left=210;until=Date.now()+left*1000;run=true;document.querySelector('#timer').textContent='일시정지';tick();document.querySelector('#next').focus({preventScroll:true})}
-function showIntro(){run=false;intro.hidden=false;introVideo.currentTime=0;document.body.classList.add('intro-active');document.querySelector('#introPrompt').hidden=false;document.querySelector('#stage').inert=true;document.querySelector('#bar').inert=true}
-document.querySelector('#introPlay').onclick=async()=>{try{await introVideo.play();introVideo.controls=true;document.querySelector('#introPrompt').hidden=true}catch(e){document.querySelector('#introError').hidden=false}};
+function finishIntro(){introVideo.pause();intro.hidden=true;document.body.classList.remove('intro-active');document.querySelector('#stage').inert=false;document.querySelector('#bar').inert=false;cur=-1;go(0);left=210;until=Date.now()+left*1000;run=true;document.querySelector('#timer').textContent='일시정지';tick();onBar=false;clearTimeout(pt);pt=0;document.body.classList.remove('peek');document.activeElement?.blur()}
+function showIntro(){run=false;intro.hidden=false;introVideo.currentTime=0;document.body.classList.add('intro-active');document.querySelector('#introPrompt').hidden=false;document.querySelector('#introSkip').hidden=false;document.querySelector('#stage').inert=true;document.querySelector('#bar').inert=true}
+document.querySelector('#introPlay').onclick=async()=>{try{await introVideo.play();introVideo.controls=false;document.querySelector('#introSkip').hidden=true;document.querySelector('#introPrompt').hidden=true}catch(e){document.querySelector('#introError').hidden=false;document.querySelector('#introSkip').hidden=false}};
+introVideo.addEventListener('touchend',e=>e.stopPropagation());
+introVideo.onclick=()=>{if(introVideo.paused)introVideo.play();else introVideo.pause()};
 document.querySelector('#introSkip').onclick=finishIntro;introVideo.addEventListener('ended',finishIntro);
-introVideo.addEventListener('error',()=>{document.querySelector('#introPrompt').hidden=false;document.querySelector('#introError').hidden=false});
-document.addEventListener('keydown',e=>{if(!intro.hidden&&!e.target.closest('button,video')){if(e.key==='Escape'){e.preventDefault();finishIntro()}else if(e.key===' '){e.preventDefault();document.querySelector('#introPlay').click()}e.stopImmediatePropagation()}},true);
+introVideo.addEventListener('error',()=>{document.querySelector('#introPrompt').hidden=false;document.querySelector('#introError').hidden=false;document.querySelector('#introSkip').hidden=false});
+document.addEventListener('keydown',e=>{if(!intro.hidden&&!e.target.closest('button')){if(e.key==='Escape'){e.preventDefault();finishIntro()}else if(e.key===' '){e.preventDefault();if(introVideo.paused)document.querySelector('#introPlay').click();else introVideo.pause()}e.stopImmediatePropagation()}},true);
 showIntro();
 </script></body></html>
