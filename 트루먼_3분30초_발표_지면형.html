@@ -445,17 +445,16 @@ dialog{margin:auto;word-break:keep-all}
 
 #intro{position:fixed;inset:0;z-index:10000;background:#101214;color:#f5f1e2;display:grid;place-items:center;font-family:Arial,sans-serif}
 #intro[hidden]{display:none}#intro video{position:absolute;inset:0;width:100%;height:100%;min-width:0;min-height:0;object-fit:contain;background:#101214}
-#introPrompt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#0006;text-align:center;padding:24px}
-#introPrompt[hidden]{display:none}#introPrompt h1{font-size:clamp(24px,4vw,52px);font-weight:600}#introPrompt p{font-size:17px}
-#intro button{color:#f5f1e2;border-color:#f5f1e280;background:#101214b0;font-family:Arial,sans-serif;padding:12px 22px}
-#intro button:hover{background:#30343a}#introSkip{position:absolute;right:20px;top:20px}#introError{max-width:480px}
+#introPrompt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#101214;text-align:center;padding:24px}
+#introPrompt[hidden]{display:none}#introPrompt h1{max-width:900px;margin:0 0 12px;font-size:clamp(24px,4vw,52px);font-weight:600;line-height:1.35;text-wrap:balance}#introPrompt p{margin:0;font-size:17px;color:#f5f1e2a8}
+#intro button{color:#f5f1e2;border:0;background:transparent;font-family:Arial,sans-serif;padding:12px 22px;cursor:pointer}#intro button:hover{color:#ffe02a;background:transparent}#intro button:focus-visible{outline:2px solid #ffe02a;outline-offset:4px}#introPlay{margin-top:22px;font-size:clamp(20px,2.5vw,28px)}#introSkip{font-size:14px;color:#f5f1e299!important}#introError{max-width:480px}
 body.intro-active #bar,body.intro-active #hint,body.intro-active #prog{visibility:hidden}
 </style></head><body>
 
 <section id="intro" aria-label="30초 도입 영상">
-<video id="introVideo" playsinline preload="metadata" poster="assets/intro-poster.jpg?v=20261002-v19" aria-label="트루먼 30초 다큐"><source src="assets/intro.mp4?v=20261002-v19" type="video/mp4"></video>
-<div id="introPrompt"><h1>한 사람의 결정은 어디까지 세계를 바꿀까</h1><p>용강중학교 · 역사 발표 자료</p><p>30초 예고편 + 3분 30초 본 발표</p><button id="introPlay">영상으로 시작</button><p id="introError" hidden>영상을 재생할 수 없습니다. 발표 바로 시작을 눌러 주세요.</p></div>
-<button id="introSkip">발표 바로 시작</button></section>
+<video id="introVideo" playsinline preload="metadata" aria-label="트루먼 30초 다큐"><source src="assets/intro.mp4?v=20261002-v19" type="video/mp4"></video>
+<div id="introPrompt"><h1>한 사람의 결정은 어디까지 세계를 바꿀까</h1><p>용강중학교 · 역사 발표 자료</p><p>30초 예고편</p><button id="introPlay">▶ 예고편 재생</button><button id="introSkip">발표 바로 시작</button><p id="introError" hidden>영상을 재생할 수 없습니다. 발표 바로 시작을 눌러 주세요.</p></div>
+</section>
 
 <div id="prog"></div>
 <div id="stage">
